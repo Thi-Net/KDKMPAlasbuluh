@@ -479,10 +479,9 @@ GRANT EXECUTE ON FUNCTION opname_items_list(UUID) TO anon, authenticated;
 -- ---------- FINANCE ENTRIES list hari ini (employee/admin) ----------
 CREATE OR REPLACE FUNCTION finance_entries_today()
 RETURNS JSONB LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
-  SELECT COALESCE(jsonb_agg(jsonb_build_object('id',f.id,'entry_number',f.entry_number,'entry_type',f.entry_type,'category',f.category,'amount',f.amount,'description',f.description,'created_at',f.created_at)), '[]'::jsonb)
+  SELECT COALESCE(jsonb_agg(jsonb_build_object('id',f.id,'entry_number',f.entry_number,'entry_type',f.entry_type,'category',f.category,'amount',f.amount,'description',f.description,'created_at',f.created_at) ORDER BY f.created_at DESC), '[]'::jsonb)
   FROM finance_entries f
-  WHERE (f.created_at at time zone 'Asia/Jakarta')::date = (now() at time zone 'Asia/Jakarta')::date
-  ORDER BY f.created_at DESC;
+  WHERE (f.created_at at time zone 'Asia/Jakarta')::date = (now() at time zone 'Asia/Jakarta')::date;
 $$;
 GRANT EXECUTE ON FUNCTION finance_entries_today() TO anon, authenticated;
 
