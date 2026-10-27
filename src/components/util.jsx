@@ -3,7 +3,7 @@ export const fmtRp = (n) => "Rp " + Number(n || 0).toLocaleString("id-ID");
 
 export const ORDER_STATUS_LABEL = {
   NEW: "Pesanan Baru", CONFIRMED: "Dikonfirmasi", PACKING: "Dikemas",
-  ON_DELIVERY: "Sedang Diantar", COMPLETED: "Selesai & Diterima", CANCELLED: "Dibatalkan"
+  READY: "Siap Diambil", ON_DELIVERY: "Sedang Diantar", COMPLETED: "Selesai & Diterima", CANCELLED: "Dibatalkan"
 };
 
 export async function api(path, opts = {}) {

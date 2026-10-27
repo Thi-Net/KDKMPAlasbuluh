@@ -143,6 +143,7 @@ BEGIN
   IF NOT (v_ord.status IN ('NEW','CONFIRMED','PACKING')) THEN RAISE EXCEPTION 'Status pesanan tidak bisa diubah lagi.'; END IF;
   UPDATE orders SET status = p_status WHERE id = p_order_id;
   IF p_status = 'ON_DELIVERY' THEN UPDATE deliveries SET dispatched_at = now() WHERE order_id = p_order_id; END IF;
+  IF p_status = 'READY' THEN UPDATE deliveries SET dispatched_at = NULL, claimed_by_employee_id = COALESCE(claimed_by_employee_id, p_actor_id) WHERE order_id = p_order_id; END IF;
   RETURN true;
 END $$;
 

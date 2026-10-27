@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { fmtRp, ORDER_STATUS_LABEL } from "@/components/util";
 
 const TIMELINE = ["NEW", "CONFIRMED", "PACKING", "ON_DELIVERY", "COMPLETED"];
+const TIMELINE_PICKUP = ["NEW", "CONFIRMED", "PACKING", "READY", "COMPLETED"];
 
 function OrdersInner() {
   const params = useSearchParams();
@@ -25,7 +26,8 @@ function OrdersInner() {
         orders.length === 0 ? <div className="card p-8 text-center text-sm text-neutral-500">Belum ada pesanan. <a href="/katalog" className="text-koperasi-red underline">Mulai belanja</a>.</div> : (
         <div className="flex flex-col gap-4">
           {orders.map((o) => {
-            const stepIdx = TIMELINE.indexOf(o.status);
+            const TL = o.fulfillment_type === "DELIVERY" ? TIMELINE : TIMELINE_PICKUP;
+            const stepIdx = TL.indexOf(o.status);
             return (
               <div key={o.id} className="card p-5">
                 <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
@@ -41,7 +43,7 @@ function OrdersInner() {
                 <div className="mt-1 flex justify-between border-t pt-1 text-sm font-bold"><span>Total (+ongkir {fmtRp(o.delivery_fee)})</span><span className="text-koperasi-red">{fmtRp(o.total_amount)}</span></div>
                 {o.status !== "CANCELLED" && (
                   <div className="mt-3 flex items-center gap-1">
-                    {TIMELINE.map((s, i) => (
+                    {TL.map((s, i) => (
                       <div key={s} className="flex flex-1 flex-col items-center">
                         <div className={`h-2 w-full rounded-full ${i <= stepIdx ? "bg-koperasi-red" : "bg-neutral-200"}`} />
                         <div className={`mt-1 text-center text-[10px] ${i <= stepIdx ? "font-semibold text-koperasi-red" : "text-neutral-400"}`}>{ORDER_STATUS_LABEL[s]}</div>
@@ -49,7 +51,7 @@ function OrdersInner() {
                     ))}
                   </div>
                 )}
-                {o.courier_name && <div className="mt-2 text-xs text-neutral-600">🛵 Kurir: <b>{o.courier_name}</b></div>}
+                {o.courier_name && o.fulfillment_type === "DELIVERY" && ["ON_DELIVERY","COMPLETED"].includes(o.status) && <div className="mt-2 text-xs text-neutral-600">🛵 Kurir: <b>{o.courier_name}</b></div>}
               </div>
             );
           })}

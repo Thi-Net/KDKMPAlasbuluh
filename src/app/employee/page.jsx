@@ -3,8 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { fmtRp, ORDER_STATUS_LABEL } from "@/components/util";
 
 const COLUMNS = [
-  { key: "NEW", label: "📥 Pesanan Baru", next: "confirm", nextLabel: "Ambil & Kemas" },
-  { key: "PACKING", label: "📦 Dikemas", next: "dispatch", nextLabel: "Antar (Kurir Jalan)" },
+  { key: "NEW", label: "📥 Pesanan Baru", next: "confirm", nextLabel: "Kemas Pesanan" },
+  { key: "PACKING", label: "📦 Dikemas", next: "dispatch", nextLabel: "Antar (Kurir Jalan)", pickupNext: "ready", pickupNextLabel: "Siap Diambil" },
   { key: "ON_DELIVERY", label: "🛵 Diantar", next: "complete", nextLabel: "Selesai & Lunas (COD)" },
   { key: "COMPLETED", label: "✅ Selesai", next: null, nextLabel: null }
 ];
@@ -88,7 +88,7 @@ export default function EmployeeDeliveryPage() {
           <div key={col.key} className="card bg-neutral-50 p-3">
             <h2 className="mb-3 text-sm font-bold text-neutral-700">{col.label}</h2>
             <div className="flex flex-col gap-3">
-              {orders.filter((o) => (col.key === "NEW" ? ["NEW", "CONFIRMED"].includes(o.status) : o.status === col.key)).map((o) => {
+              {orders.filter((o) => (col.key === "NEW" ? ["NEW", "CONFIRMED"].includes(o.status) : col.key === "ON_DELIVERY" ? o.status === "ON_DELIVERY" : col.key === "PACKING" ? o.status === "PACKING" : o.status === col.key)).map((o) => {
                 const waitMin = Math.floor((Date.now() - new Date(o.created_at).getTime()) / 60000);
                 const slaLate = col.key === "NEW" && waitMin > 5;
                 return (
@@ -101,8 +101,12 @@ export default function EmployeeDeliveryPage() {
                     {(o.items || []).map((it, i) => <div key={i} className="text-xs text-neutral-600">{it.qty}× {it.name}</div>)}
                     {o.courier_name && <div className="mt-1 text-[11px] text-green-700">Diproses oleh {o.courier_name}</div>}
                     <div className="mt-2 flex flex-wrap gap-1">
-                      {col.key === "NEW" && <button className="btn-primary flex-1 text-xs" onClick={() => act(o.id, "claim")}>Ambil Order</button>}
-                      {col.next && col.key !== "NEW" && <button className="btn-primary flex-1 text-xs" onClick={() => act(o.id, col.next)}>{col.nextLabel}</button>}
+                      {col.key === "NEW" && o.status === "NEW" && <button className="btn-primary flex-1 text-xs" onClick={() => act(o.id, "claim")}>Ambil Order</button>}
+                      {col.key === "NEW" && o.status === "CONFIRMED" && <button className="btn-primary flex-1 text-xs" onClick={() => act(o.id, "confirm")}>Kemas Pesanan</button>}
+                      {col.key === "PACKING" && (o.fulfillment_type === "DELIVERY"
+                        ? <button className="btn-primary flex-1 text-xs" onClick={() => act(o.id, "dispatch")}>Antar (Kurir Jalan)</button>
+                        : <button className="btn-primary flex-1 text-xs" onClick={() => act(o.id, "ready")}>Siap Diambil</button>)}
+                      {col.key === "ON_DELIVERY" && <button className="btn-primary flex-1 text-xs" onClick={() => act(o.id, "complete")}>Selesai & Lunas (COD)</button>}
                       {!["COMPLETED", "CANCELLED"].includes(o.status) && (
                         <button className="btn-outline text-xs" onClick={() => { if (confirm("Batalkan pesanan " + o.order_number + "? Stok akan dikembalikan.")) act(o.id, "cancel"); }}>Batalkan</button>
                       )}
