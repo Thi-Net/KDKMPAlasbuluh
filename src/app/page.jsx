@@ -14,8 +14,7 @@ const NAV = [
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <div className="flag-stripe" aria-hidden="true" />
-      <header className="sticky top-0 z-40 border-b-4 border-koperasi-gold bg-koperasi-red text-white shadow-[var(--shadow-lg)]">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-koperasi-darkred/95 text-white shadow-lg backdrop-blur supports-[backdrop-filter]:bg-koperasi-darkred/85">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
           <Link href="/" className="flex items-center gap-3">
             <KoperasiLogo size={44} />
