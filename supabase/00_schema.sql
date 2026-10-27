@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS orders (
   customer_id UUID NOT NULL REFERENCES users(id),
   channel TEXT NOT NULL DEFAULT 'WEB' CHECK (channel IN ('WEB','ANDROID','OFFLINE_POS')),
   fulfillment_type TEXT NOT NULL CHECK (fulfillment_type IN ('DELIVERY','PICKUP','DIRECT_POS')),
-  status TEXT NOT NULL DEFAULT 'NEW' CHECK (status IN ('NEW','CONFIRMED','PACKING','ON_DELIVERY','COMPLETED','CANCELLED')),
+  status TEXT NOT NULL DEFAULT 'NEW' CHECK (status IN ('NEW','CONFIRMED','PACKING','READY','ON_DELIVERY','COMPLETED','CANCELLED')),
   payment_method TEXT NOT NULL DEFAULT 'COD' CHECK (payment_method IN ('COD','QRIS')),
   payment_status TEXT NOT NULL DEFAULT 'UNPAID' CHECK (payment_status IN ('UNPAID','PAID')),
   dusun_zone_id UUID REFERENCES dusun_zones(id),
