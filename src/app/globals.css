@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&family=Rubik:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #C62828;
+  --color-primary-dark: #8E1B1B;
+  --color-accent: #F9A825;
+  --color-cream: #FFF8E1;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+  --shadow-xl: 0 20px 25px rgba(0,0,0,0.15);
+}
+
+body {
+  @apply bg-neutral-50 text-neutral-900 antialiased;
+  font-family: 'Nunito Sans', system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, .font-heading { font-family: 'Rubik', system-ui, sans-serif; }
+
+a, button, select, [role="button"] { cursor: pointer; }
+
+.btn { @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 min-h-[44px]; }
+.btn-primary { @apply btn bg-koperasi-red text-white shadow-[var(--shadow-md)] hover:bg-koperasi-darkred hover:-translate-y-px hover:shadow-[var(--shadow-lg)]; }
+.btn-gold { @apply btn bg-koperasi-gold text-neutral-900 shadow-[var(--shadow-md)] hover:brightness-95 hover:-translate-y-px hover:shadow-[var(--shadow-lg)]; }
+.btn-outline { @apply btn border border-neutral-300 bg-white text-neutral-800 hover:bg-neutral-100 hover:border-koperasi-red; }
+.card { @apply rounded-xl border border-neutral-200 bg-white shadow-[var(--shadow-md)] transition-all duration-200; }
+.card-hover { @apply hover:-translate-y-0.5 hover:shadow-[var(--shadow-lg)]; }
+.input { @apply w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 transition-colors duration-200 focus:border-koperasi-red focus:outline-none focus:ring-2 focus:ring-koperasi-red/20 min-h-[44px]; }
+.badge { @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold; }
+.label { @apply mb-1 block text-sm font-medium text-neutral-700; }
+
+/* Motif bendera Merah Putih Indonesia */
+.flag-stripe { @apply h-1.5 w-full; background: linear-gradient(to bottom, #C62828 0%, #C62828 50%, #ffffff 50%, #ffffff 100%); }
+
+/* Fokus terlihat untuk aksesibilitas */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid #F9A825; outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
