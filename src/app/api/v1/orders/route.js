@@ -1,4 +1,4 @@
-import { select, rpc, DbError } from "@/lib/db";
+import { rpc, DbError } from "@/lib/db";
 import { getUserFromRequest, apiError, requireRole } from "@/lib/auth";
 
 // POST /api/v1/orders — checkout customer (RPC transaksional: validasi stok & harga server + idempotency)
@@ -32,11 +32,10 @@ export async function GET(req) {
   const user = await getUserFromRequest(req);
   if (!user) return apiError(401, "Belum login.");
   try {
-    let rows;
     if (user.role === "customer") {
-      rows = await select("v_orders_full", { eq: { customer_id: user.id }, order: "created_at.desc", limit: 50 });
+      rows = await rpc("orders_list", { p_customer_id: user.id });
     } else {
-      rows = await select("v_orders_full", { order: "created_at.desc", limit: 100 });
+      rows = await rpc("orders_list", { p_customer_id: null });
     }
     return Response.json({ success: true, data: rows });
   } catch (e) {

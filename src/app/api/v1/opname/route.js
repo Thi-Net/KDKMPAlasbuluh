@@ -6,7 +6,7 @@ export async function GET(req) {
   const user = await getUserFromRequest(req);
   const denied = requireRole(user, ["admin", "employee"]); if (denied) return denied;
   try {
-    const rows = await select("v_opname_sessions", { order: "created_at.desc", limit: 50 });
+    const rows = await rpc("opname_sessions_list");
     return Response.json({ success: true, data: rows });
   } catch (e) {
     const msg = e.message || "Gagal memuat sesi opname.";

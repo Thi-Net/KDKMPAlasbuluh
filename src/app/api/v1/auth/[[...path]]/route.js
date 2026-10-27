@@ -1,4 +1,4 @@
-import { select, rpc, DbError } from "@/lib/db";
+import { rpc, DbError } from "@/lib/db";
 import { getUserFromRequest, verifyPassword, signToken, hashPassword } from "@/lib/auth";
 
 export async function POST(req) {
@@ -10,12 +10,7 @@ export async function POST(req) {
     const { identifier, password } = body;
     if (!identifier || !password) return Response.json({ success: false, error: "Isi nomor HP/username dan password." }, { status: 400 });
     try {
-      const rows = await select("users", {
-        select: "id,name,phone,role,password_hash,is_active",
-        or: `phone.eq.${identifier.trim()},name.eq.${identifier.trim()},email.eq.${identifier.trim()}`,
-        limit: 1
-      });
-      const user = rows[0];
+      const user = await rpc("app_login", { p_identifier: identifier.trim() });
       if (!user || !user.is_active) return Response.json({ success: false, error: "Akun tidak ditemukan atau tidak aktif." }, { status: 401 });
       const ok = await verifyPassword(password, user.password_hash);
       if (!ok) return Response.json({ success: false, error: "Password salah." }, { status: 401 });

@@ -1,4 +1,4 @@
-import { select, rpc, DbError } from "@/lib/db";
+import { rpc, DbError } from "@/lib/db";
 import { getUserFromRequest, apiError, requireRole, hashPassword } from "@/lib/auth";
 
 export async function GET(req) {
@@ -11,15 +11,15 @@ export async function GET(req) {
       return Response.json({ success: true, data });
     }
     if (what === "users") {
-      const rows = await select("v_users_safe", { select: "id,name,phone,email,role,is_active,shu_points,member_number,created_at", order: "created_at.desc" });
+      const rows = await rpc("users_list");
       return Response.json({ success: true, data: rows });
     }
     if (what === "audit") {
-      const rows = await select("v_audit_log", { limit: 100 });
+      const rows = await rpc("audit_log_list", { p_limit: 100 });
       return Response.json({ success: true, data: rows });
     }
     if (what === "closings") {
-      const rows = await select("v_daily_closings", { order: "created_at.desc", limit: 30 });
+      const rows = await rpc("closings_list");
       return Response.json({ success: true, data: rows });
     }
     return apiError(400, "Parameter what tidak dikenal.");

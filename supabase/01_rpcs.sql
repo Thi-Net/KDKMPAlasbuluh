@@ -460,3 +460,83 @@ BEGIN
   RETURN jsonb_build_object('id', v_id, 'name', v_name);
 END $$;
 GRANT EXECUTE ON FUNCTION register_customer(TEXT,TEXT,TEXT,UUID) TO anon, authenticated;
+
+-- ---------- LOGIN (RPC — users tidak bisa di-SELECT anon) ----------
+CREATE OR REPLACE FUNCTION app_login(p_identifier TEXT)
+RETURNS JSONB LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
+  SELECT to_jsonb(u) - 'password_hash' FROM users u
+  WHERE (u.phone = p_identifier OR u.name = p_identifier OR u.email = p_identifier) AND u.is_active LIMIT 1;
+$$;
+GRANT EXECUTE ON FUNCTION app_login(TEXT) TO anon, authenticated;
+
+-- ---------- OPNAME ITEM list (employee/admin) ----------
+CREATE OR REPLACE FUNCTION opname_items_list(p_session_id UUID)
+RETURNS JSONB LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
+  SELECT COALESCE(jsonb_agg(to_jsonb(oi)), '[]'::jsonb) FROM opname_items oi WHERE oi.opname_session_id = p_session_id;
+$$;
+GRANT EXECUTE ON FUNCTION opname_items_list(UUID) TO anon, authenticated;
+
+-- ---------- FINANCE ENTRIES list hari ini (employee/admin) ----------
+CREATE OR REPLACE FUNCTION finance_entries_today()
+RETURNS JSONB LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
+  SELECT COALESCE(jsonb_agg(jsonb_build_object('id',f.id,'entry_number',f.entry_number,'entry_type',f.entry_type,'category',f.category,'amount',f.amount,'description',f.description,'created_at',f.created_at)), '[]'::jsonb)
+  FROM finance_entries f
+  WHERE (f.created_at at time zone 'Asia/Jakarta')::date = (now() at time zone 'Asia/Jakarta')::date
+  ORDER BY f.created_at DESC;
+$$;
+GRANT EXECUTE ON FUNCTION finance_entries_today() TO anon, authenticated;
+
+-- ---------- AUDIT LOG list (admin) ----------
+CREATE OR REPLACE FUNCTION audit_log_list(p_limit INTEGER DEFAULT 100)
+RETURNS JSONB LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
+  SELECT COALESCE(jsonb_agg(jsonb_build_object('id',a.id,'created_at',a.created_at,'actor_name',u.name,'actor_role',a.actor_role,'action',a.action,'entity_name',a.entity_name,'entity_id',a.entity_id,'before_state_json',a.before_state_json,'after_state_json',a.after_state_json)), '[]'::jsonb)
+  FROM (SELECT * FROM audit_logs ORDER BY created_at DESC LIMIT 100) a LEFT JOIN users u ON u.id = a.actor_user_id;
+$$;
+GRANT EXECUTE ON FUNCTION audit_log_list(INTEGER) TO anon, authenticated;
+
+-- ---------- DAILY CLOSINGS list (admin) ----------
+CREATE OR REPLACE FUNCTION closings_list()
+RETURNS JSONB LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
+  SELECT COALESCE(jsonb_agg(jsonb_build_object('id',c.id,'closing_date',c.closing_date,'submitted_by_name',u.name,'expected_closing_cash',c.expected_closing_cash,'actual_physical_cash',c.actual_physical_cash,'cash_difference',c.cash_difference,'status',c.status,'created_at',c.created_at)), '[]'::jsonb)
+  FROM (SELECT * FROM daily_closings ORDER BY created_at DESC LIMIT 30) c LEFT JOIN users u ON u.id = c.submitted_by_employee_id;
+$$;
+GRANT EXECUTE ON FUNCTION closings_list() TO anon, authenticated;
+
+-- ---------- ORDERS list by customer / semua (untuk polling kanban) ----------
+CREATE OR REPLACE FUNCTION orders_list(p_customer_id UUID DEFAULT NULL)
+RETURNS JSONB LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
+  SELECT COALESCE(jsonb_agg(jsonb_build_object(
+    'id',o.id,'order_number',o.order_number,'status',o.status,'created_at',o.created_at,
+    'customer_id',o.customer_id,'customer_name',u.name,'channel',o.channel,
+    'fulfillment_type',o.fulfillment_type,'dusun_name',z.dusun_name,
+    'delivery_address',o.delivery_address,'delivery_landmark_notes',o.delivery_landmark_notes,
+    'subtotal',o.subtotal,'delivery_fee',o.delivery_fee,'total_amount',o.total_amount,
+    'payment_method',o.payment_method,'payment_status',o.payment_status,
+    'courier_name',du.name,
+    'items',(SELECT json_agg(json_build_object('name',oi.product_name_snapshot,'qty',oi.qty,'price',oi.unit_selling_price,'subtotal',oi.subtotal)) FROM order_items oi WHERE oi.order_id = o.id)
+  ) ORDER BY o.created_at DESC), '[]'::jsonb)
+  FROM orders o
+  JOIN users u ON u.id = o.customer_id
+  LEFT JOIN dusun_zones z ON z.id = o.dusun_zone_id
+  LEFT JOIN deliveries d ON d.order_id = o.id
+  LEFT JOIN users du ON du.id = d.claimed_by_employee_id
+  WHERE (p_customer_id IS NULL OR o.customer_id = p_customer_id)
+  LIMIT 100;
+$$;
+GRANT EXECUTE ON FUNCTION orders_list(UUID) TO anon, authenticated;
+
+-- ---------- OPNAME SESSIONS list ----------
+CREATE OR REPLACE FUNCTION opname_sessions_list()
+RETURNS JSONB LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
+  SELECT COALESCE(jsonb_agg(jsonb_build_object('id',s.id,'session_code',s.session_code,'title',s.title,'status',s.status,'created_by_name',u.name,'item_count',(SELECT count(*) FROM opname_items oi WHERE oi.opname_session_id = s.id),'total_variance_value',s.total_variance_value,'created_at',s.created_at) ORDER BY s.created_at DESC), '[]'::jsonb)
+  FROM (SELECT * FROM opname_sessions ORDER BY created_at DESC LIMIT 50) s LEFT JOIN users u ON u.id = s.created_by_employee_id;
+$$;
+GRANT EXECUTE ON FUNCTION opname_sessions_list() TO anon, authenticated;
+
+-- ---------- USERS list (admin) ----------
+CREATE OR REPLACE FUNCTION users_list()
+RETURNS JSONB LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
+  SELECT COALESCE(jsonb_agg(jsonb_build_object('id',u.id,'name',u.name,'phone',u.phone,'email',u.email,'role',u.role,'is_active',u.is_active,'shu_points',u.shu_points,'member_number',u.member_number,'created_at',u.created_at) ORDER BY u.created_at DESC), '[]'::jsonb)
+  FROM users u;
+$$;
+GRANT EXECUTE ON FUNCTION users_list() TO anon, authenticated;
