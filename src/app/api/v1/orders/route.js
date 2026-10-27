@@ -32,6 +32,7 @@ export async function GET(req) {
   const user = await getUserFromRequest(req);
   if (!user) return apiError(401, "Belum login.");
   try {
+    let rows;
     if (user.role === "customer") {
       rows = await rpc("orders_list", { p_customer_id: user.id });
     } else {
