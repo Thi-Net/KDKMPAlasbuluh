@@ -464,7 +464,7 @@ GRANT EXECUTE ON FUNCTION register_customer(TEXT,TEXT,TEXT,UUID) TO anon, authen
 -- ---------- LOGIN (RPC — users tidak bisa di-SELECT anon) ----------
 CREATE OR REPLACE FUNCTION app_login(p_identifier TEXT)
 RETURNS JSONB LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
-  SELECT to_jsonb(u) - 'password_hash' FROM users u
+  SELECT to_jsonb(u) - 'password_hash' || jsonb_build_object('_hash', u.password_hash) FROM users u
   WHERE (u.phone = p_identifier OR u.name = p_identifier OR u.email = p_identifier) AND u.is_active LIMIT 1;
 $$;
 GRANT EXECUTE ON FUNCTION app_login(TEXT) TO anon, authenticated;

@@ -12,7 +12,7 @@ export async function POST(req) {
     try {
       const user = await rpc("app_login", { p_identifier: identifier.trim() });
       if (!user || !user.is_active) return Response.json({ success: false, error: "Akun tidak ditemukan atau tidak aktif." }, { status: 401 });
-      const ok = await verifyPassword(password, user.password_hash);
+      const ok = await verifyPassword(password, user._hash);
       if (!ok) return Response.json({ success: false, error: "Password salah." }, { status: 401 });
       try { await rpc("touch_last_login", { p_user_id: user.id }); } catch (e) {}
       const token = await signToken({ userId: user.id, role: user.role, name: user.name });
