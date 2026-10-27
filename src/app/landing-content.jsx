@@ -133,21 +133,6 @@ export function LandingContent() {
                 </Link>
               </div>
             </div>
-            <div className="hidden w-[300px] shrink-0 lg:block" aria-hidden="true">
-              <div className="overflow-hidden rounded-2xl bg-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.35)] ring-1 ring-white/25 backdrop-blur-sm">
-                <div className="h-3.5 w-full bg-white" />
-                <div className="h-3.5 w-full bg-koperasi-red" />
-                <div className="p-5">
-                  <KoperasiLogo size={56} />
-                  <div className="mt-3 font-heading text-lg font-bold leading-tight text-white">Gerai Alasbuluh</div>
-                  <div className="mt-1 text-xs text-white/70">Kec. Wongsorejo · Kab. Banyuwangi · Jawa Timur</div>
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    <span className="rounded-full bg-koperasi-gold/20 px-2.5 py-1 text-[10px] font-bold text-koperasi-gold">BERBADAN HUKUM</span>
-                    <span className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold text-white/80">DIGITAL & TRANSPARAN</span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* statistik overlay hero (ala simkopdes) */}
