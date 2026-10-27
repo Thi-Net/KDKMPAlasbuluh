@@ -4,16 +4,17 @@
 -- Jalankan sekali di Supabase SQL Editor. Idempotent.
 -- ============================================================
 
--- Cari nama constraint CHECK pada kolom status lalu drop + recreate
+-- Drop SEMUA constraint CHECK pada kolom status (idempotent, nama apapun)
 DO $$
 DECLARE c TEXT;
 BEGIN
-  SELECT conname INTO c FROM pg_constraint
-  WHERE conrelid = 'public.orders'::regclass AND contype = 'c'
-    AND pg_get_constraintdef(oid) ILIKE '%status%';
-  IF c IS NOT NULL THEN
+  FOR c IN
+    SELECT conname FROM pg_constraint
+    WHERE conrelid = 'public.orders'::regclass AND contype = 'c'
+      AND pg_get_constraintdef(oid) ILIKE '%status%'
+  LOOP
     EXECUTE format('ALTER TABLE public.orders DROP CONSTRAINT %I', c);
-  END IF;
+  END LOOP;
 END $$;
 
 ALTER TABLE public.orders
