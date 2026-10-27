@@ -15,7 +15,7 @@ export default function LaporanPage() {
   const load = async () => {
     setErr("");
     try {
-      const q = `?year=${year}&month=${month}`;
+      const q = `&year=${year}&month=${month}`;
       const [a, b] = await Promise.all([
         fetch(`/api/v1/admin?what=profit_loss${q}`).then((r) => r.json()),
         fetch(`/api/v1/admin?what=sales_detail${q}`).then((r) => r.json()),
