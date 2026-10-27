@@ -1,4 +1,4 @@
-import { rpc, DbError } from "@/lib/db";
+import { rpc, select, DbError } from "@/lib/db";
 import { getUserFromRequest, verifyPassword, signToken, hashPassword } from "@/lib/auth";
 
 export async function POST(req) {
@@ -40,6 +40,7 @@ export async function POST(req) {
       res.headers.append("Set-Cookie", `kmp_token=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${60 * 60 * 24 * 7}`);
       return res;
     } catch (e) {
+      console.error("register error:", e && (e.stack || e.message));
       return Response.json({ success: false, error: e instanceof DbError ? e.message : "Gagal registrasi." }, { status: 500 });
     }
   }

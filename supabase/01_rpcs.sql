@@ -121,6 +121,10 @@ RETURNS BOOLEAN LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
 DECLARE v_actor users; v_rows INT;
 BEGIN
   v_actor := assert_role(p_actor_id, ARRAY['admin','employee']);
+  -- Pastikan baris deliveries ada (order PICKUP tidak punya baris deliveries)
+  INSERT INTO deliveries (order_id, sla_deadline_at)
+  SELECT p_order_id, now() + interval '60 minutes'
+  WHERE NOT EXISTS (SELECT 1 FROM deliveries WHERE order_id = p_order_id);
   UPDATE deliveries SET claimed_by_employee_id = p_actor_id, claimed_at = now()
     WHERE order_id = p_order_id AND claimed_by_employee_id IS NULL;
   GET DIAGNOSTICS v_rows = ROW_COUNT;

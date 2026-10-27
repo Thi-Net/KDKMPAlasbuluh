@@ -33,7 +33,7 @@ export default function CheckoutPage() {
       body: JSON.stringify({
         items: items.map((i) => ({ product_id: i.product_id, qty: i.qty })),
         fulfillment_type: fulfillment,
-        dusun_zone_id: fulfillment === "DELIVERY" ? Number(zoneId) : null,
+        dusun_zone_id: fulfillment === "DELIVERY" ? zoneId : null,
         delivery_address: fulfillment === "DELIVERY" ? address : "",
         delivery_landmark_notes: fulfillment === "DELIVERY" ? landmark : "",
         payment_method: "COD",
