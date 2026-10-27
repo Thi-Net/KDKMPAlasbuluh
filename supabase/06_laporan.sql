@@ -6,7 +6,7 @@
 -- ---------- LABA RUGI bulanan (admin) ----------
 CREATE OR REPLACE FUNCTION profit_loss_report(p_year INTEGER, p_month INTEGER)
 RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
-DECLARE v_start DATE; v_end DATE; v ROW;
+DECLARE v_start DATE; v_end DATE; v RECORD;
 BEGIN
   IF p_year IS NULL OR p_month IS NULL THEN
     v_start := date_trunc('month', (now() at time zone 'Asia/Jakarta'))::date;
