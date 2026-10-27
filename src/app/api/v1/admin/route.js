@@ -22,6 +22,34 @@ export async function GET(req) {
       const rows = await rpc("closings_list");
       return Response.json({ success: true, data: rows });
     }
+    if (what === "profit_loss" || what === "sales_detail" || what === "stock_movement") {
+      const u = new URL(req.url);
+      const pYear = u.searchParams.get("year") ? Number(u.searchParams.get("year")) : null;
+      const pMonth = u.searchParams.get("month") ? Number(u.searchParams.get("month")) : null;
+      const fn = what === "profit_loss" ? "profit_loss_report" : what === "sales_detail" ? "sales_detail_report" : "stock_movement_report";
+      const data = await rpc(fn, { p_year: pYear, p_month: pMonth });
+      return Response.json({ success: true, data });
+    }
+    if (what === "export_sales_csv") {
+      const u = new URL(req.url);
+      const pYear = u.searchParams.get("year") ? Number(u.searchParams.get("year")) : null;
+      const pMonth = u.searchParams.get("month") ? Number(u.searchParams.get("month")) : null;
+      const rows = await rpc("sales_detail_report", { p_year: pYear, p_month: pMonth });
+      const lines = ["Tanggal,Penjualan Online,Penjualan Offline,Total,Pesanan Online"];
+      for (const r of rows) lines.push(`${r.tanggal},${r.online},${r.offline},${r.total},${r.orders_online}`);
+      const month = pMonth || new Date().getMonth() + 1, year = pYear || new Date().getFullYear();
+      return new Response("\uFEFF" + lines.join("\n"), { headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="laporan-penjualan-${year}-${String(month).padStart(2, "0")}.csv"` } });
+    }
+    if (what === "export_stock_csv") {
+      const u = new URL(req.url);
+      const pYear = u.searchParams.get("year") ? Number(u.searchParams.get("year")) : null;
+      const pMonth = u.searchParams.get("month") ? Number(u.searchParams.get("month")) : null;
+      const rows = await rpc("stock_movement_report", { p_year: pYear, p_month: pMonth });
+      const lines = ["Tanggal,Produk,Tipe Mutasi,Qty,Saldo Setelah,Referensi"];
+      for (const r of rows) lines.push(`${r.tanggal},"${r.produk}",${r.tipe},${r.qty},${r.saldo_setelah},"${(r.referensi || "").replace(/"/g, "'")}"`);
+      const month = pMonth || new Date().getMonth() + 1, year = pYear || new Date().getFullYear();
+      return new Response("\uFEFF" + lines.join("\n"), { headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="mutasi-stok-${year}-${String(month).padStart(2, "0")}.csv"` } });
+    }
     return apiError(400, "Parameter what tidak dikenal.");
   } catch (e) {
     const msg = e.message || "Gagal memuat data admin.";

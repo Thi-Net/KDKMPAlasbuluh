@@ -9,6 +9,7 @@ export default function AdminLayout({ children }) {
             <a className="rounded bg-white/10 px-3 py-1 hover:bg-white/20" href="/admin/products">Produk & Stok</a>
             <a className="rounded bg-white/10 px-3 py-1 hover:bg-white/20" href="/admin/opname">Approval Opname</a>
             <a className="rounded bg-white/10 px-3 py-1 hover:bg-white/20" href="/admin/users">Akun</a>
+            <a className="rounded bg-white/10 px-3 py-1 hover:bg-white/20" href="/admin/laporan">Laporan</a>
             <a className="rounded bg-white/10 px-3 py-1 hover:bg-white/20" href="/admin/audit">Audit Log</a>
             <a className="rounded bg-white/10 px-3 py-1 hover:bg-white/20" href="/">Beranda</a>
           </nav>

@@ -17,6 +17,8 @@ Jalankan berurutan di **Supabase SQL Editor**:
 2. `supabase/01_rpcs.sql` — 28 fungsi RPC security definer (ledger stok, order idempotent, opname, kas, dsb.)
 3. `supabase/02b_rls_grants.sql` — view + RLS + grant anon (read katalog; akses sensitif via RPC)
 4. (opsional) `supabase/02_seed.sql` — data demo: akun `admin/admin123`, `karyawan/karyawan123`, `customer (HP 081000000003)/customer123`, 4 dusun, 5 kategori, 18 produk, CMS, feature flags.
+5. `supabase/05_add_ready_status.sql` — tambah status READY (Siap Diambil) untuk order pickup.
+6. `supabase/06_laporan.sql` — fungsi laporan laba rugi, penjualan harian, mutasi stok (untuk halaman Laporan + ekspor).
    Lalu file fix tambahan yang dikirim via chat (mis. `04_fix_views.sql`) bila ada.
 
 Setelah itu set env di Vercel (sudah dilakukan): `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `JWT_SECRET`.
@@ -31,8 +33,11 @@ Setelah itu set env di Vercel (sudah dilakukan): `SUPABASE_URL`, `SUPABASE_PUBLI
 | `/orders/status` | POST | claim/confirm/dispatch/complete/cancel/cod_remit |
 | `/opname` | GET/POST/PUT | sesi opname, item, submit, approve/reject |
 | `/finance` | GET/POST | rekap kas, pos_sale, expense, closing |
-| `/admin?what=dashboard\|users\|audit\|closings` | GET | data admin |
+| `/admin?what=dashboard\|users\|audit\|closings\|profit_loss\|sales_detail\|stock_movement` | GET | data admin & laporan |
+| `/admin?what=export_sales_csv\|export_stock_csv` | GET | ekspor laporan Excel/CSV |
 | `/dusun`, `/cms` | GET | publik |
+
+Dokumentasi lengkap endpoint: [docs/API.md](docs/API.md).
 
 Notifikasi real-time: polling (serverless Vercel tidak mendukung WebSocket). Produksi nanti: WebSocket via layanan terpisah (Tahap 2).
 
