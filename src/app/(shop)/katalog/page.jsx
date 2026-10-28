@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "@/components/CartContext";
 import { fmtRp } from "@/components/util";
 import { Icon } from "@/components/Icon";
@@ -29,48 +29,74 @@ export default function KatalogPage() {
   const notify = (m) => { setToast(m); setTimeout(() => setToast(""), 1800); };
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-6">
-      <h1 className="mb-4 text-xl font-bold">Katalog Gerai Alasbuluh</h1>
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row">
-        <input className="input flex-1" placeholder="Cari barang…" value={search} onChange={(e) => setSearch(e.target.value)} />
-        <select className="input sm:w-52" value={cat} onChange={(e) => setCat(e.target.value)}>
+    <main className="mx-auto max-w-5xl px-4 py-6 md:py-8">
+      <div className="mb-5 flex items-end justify-between gap-3">
+        <div>
+          <h1 className="font-heading text-2xl font-extrabold text-neutral-900">Katalog Gerai</h1>
+          <p className="text-sm text-neutral-500">Kebutuhan pokok & produk UMKM warga Alasbuluh.</p>
+        </div>
+        <span className="badge-red hidden sm:inline-flex"><Icon name="check" className="h-3 w-3" /> COD Aktif</span>
+      </div>
+
+      <div className="card mb-5 flex flex-col gap-2.5 p-3 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Icon name="box" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-300" />
+          <input className="input pl-9" placeholder="Cari barang…" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Cari produk" />
+        </div>
+        <select className="input sm:w-48" value={cat} onChange={(e) => setCat(e.target.value)} aria-label="Filter kategori">
           <option value="">Semua Kategori</option>
           {cats.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
         </select>
-        <label className="btn-outline cursor-pointer select-none sm:w-auto">
-          <input type="checkbox" className="mr-2" checked={localOnly} onChange={(e) => setLocalOnly(e.target.checked)} />
-          UMKM Alasbuluh
-        </label>
+        <button type="button" onClick={() => setLocalOnly(!localOnly)} aria-pressed={localOnly}
+          className={`btn btn-sm shrink-0 ${localOnly ? "btn-primary" : "btn-outline"}`}>
+          <Icon name="leaf" className="h-3.5 w-3.5" /> UMKM Alasbuluh
+        </button>
       </div>
+
       {products.length === 0 ? (
-        <div className="card p-8 text-center text-sm text-neutral-500">
-          Tidak ada produk ditemukan. Jika database belum terhubung, admin perlu menjalankan <code>supabase/schema.sql</code> + <code>seed.sql</code>.
+        <div className="card p-10 text-center text-sm text-neutral-400">
+          <Icon name="box" className="mx-auto mb-3 h-10 w-10 text-neutral-200" />
+          Tidak ada produk ditemukan.
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {products.map((p) => (
-            <div key={p.id} className="card flex flex-col overflow-hidden">
-              <div className="flex h-28 items-center justify-center bg-white text-neutral-300"><Icon name="box" className="h-10 w-10" /></div>
-              <div className="flex flex-1 flex-col p-3">
-                <div className="text-sm font-semibold leading-tight">{p.name}</div>
-                {p.is_local_alasbuluh && <span className="badge mt-1 w-fit bg-koperasi-red text-white"><Icon name="leaf" className="mr-1 h-3 w-3" /> Lokal Alasbuluh</span>}
-                <div className="mt-auto pt-2">
-                  <div className="font-bold text-koperasi-red">{fmtRp(p.selling_price)} <span className="text-xs font-normal text-neutral-400">/{p.unit}</span></div>
-                  <div className="text-xs text-neutral-500">{p.current_stock > 0 ? `Stok ${p.current_stock}` : "Stok Habis"}</div>
-                  <button
-                    className="btn-primary mt-2 w-full text-xs"
-                    disabled={p.current_stock <= 0}
-                    onClick={() => notify(add(p) ? `${p.name} masuk keranjang` : `Stok ${p.name} tidak mencukupi`)}
-                  >
-                    {p.current_stock > 0 ? "+ Keranjang" : "Stok Habis"}
-                  </button>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4">
+          {products.map((p) => {
+            const habis = p.current_stock <= 0;
+            const stockLow = !habis && p.current_stock <= 10;
+            return (
+              <div key={p.id} className="card card-hover flex flex-col overflow-hidden">
+                <div className="relative flex h-28 items-center justify-center bg-gradient-to-br from-[#FBF7F0] to-[#F4EDE2] text-neutral-300">
+                  <Icon name="box" className="h-11 w-11" />
+                  {p.is_local_alasbuluh && (
+                    <span className="badge-solid-red absolute left-2 top-2 !px-2 !py-0.5 !text-[10px]">
+                      <Icon name="leaf" className="h-2.5 w-2.5" /> Lokal
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-1 flex-col p-3.5">
+                  <div className="text-sm font-bold leading-snug text-neutral-900">{p.name}</div>
+                  <div className="mt-auto pt-2.5">
+                    <div className="font-heading text-lg font-extrabold text-koperasi-red">
+                      {fmtRp(p.selling_price)} <span className="text-xs font-semibold text-neutral-400">/{p.unit}</span>
+                    </div>
+                    <div className={`mt-0.5 text-[11px] font-bold ${habis ? "text-red-500" : stockLow ? "text-amber-600" : "text-green-600"}`}>
+                      {habis ? "Stok Habis" : stockLow ? `Sisa ${p.current_stock} — cepat!` : `Tersedia ${p.current_stock}`}
+                    </div>
+                    <button
+                      className={`mt-2.5 w-full ${habis ? "btn-ghost bg-neutral-100 text-neutral-400" : "btn-primary"} text-xs`}
+                      disabled={habis}
+                      onClick={() => notify(add(p) ? `${p.name} masuk keranjang` : `Stok ${p.name} tidak mencukupi`)}
+                    >
+                      {habis ? "Stok Habis" : <><Icon name="cart" className="h-3.5 w-3.5" /> Keranjang</>}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
-      {toast && <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-neutral-900 px-5 py-2 text-sm text-white shadow-lg">{toast}</div>}
+      {toast && <div className="toast">{toast}</div>}
     </main>
   );
 }
