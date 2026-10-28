@@ -1,3 +1,4 @@
+import { MotionRoot } from "@/components/motion";
 import Link from "next/link";
 import { LandingContent } from "./landing-content";
 import { KoperasiLogo, Icon } from "@/components/Icon";
@@ -13,6 +14,8 @@ const NAV = [
 
 export default function Home() {
   return (
+    <>
+      <MotionRoot />
     <main className="min-h-screen">
       <header className="sticky top-0 z-40 border-b border-white/10 bg-koperasi-darkred/95 text-white shadow-lg backdrop-blur supports-[backdrop-filter]:bg-koperasi-darkred/85">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
@@ -25,7 +28,7 @@ export default function Home() {
           </Link>
           <nav className="hidden items-center gap-5 text-sm font-semibold md:flex" aria-label="Navigasi utama">
             {NAV.map((n) => (
-              <a key={n.href} href={n.href} className="transition-colors duration-200 hover:text-koperasi-gold">{n.label}</a>
+              <a key={n.href} data-hero="nav-link" href={n.href} className="transition-colors duration-200 hover:text-koperasi-gold">{n.label}</a>
             ))}
           </nav>
           <Link href="/login" className="btn-gold text-sm">
@@ -72,5 +75,6 @@ export default function Home() {
         </div>
       </footer>
     </main>
+    </>
   );
 }

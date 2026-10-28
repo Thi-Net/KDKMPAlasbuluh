@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { fmtRp } from "@/components/util";
 import { Icon, KoperasiLogo } from "@/components/Icon";
+import { MotionRoot, MeshGradient, SplitLines, useHeroEntrance, useRevealOnScroll } from "@/components/motion";
 
 const FALLBACK_HERO = {
   title: "Koperasi Desa Merah Putih",
@@ -77,6 +78,8 @@ function SectionHead({ eyebrow, title, desc, light }) {
 }
 
 export function LandingContent() {
+  useHeroEntrance();
+  useRevealOnScroll();
   const [data, setData] = useState(null);
   const [dbError, setDbError] = useState(false);
   const [products, setProducts] = useState([]);
@@ -102,10 +105,7 @@ export function LandingContent() {
     <div>
       {/* ============ HERO FULL-BLEED (ala simkopdes) ============ */}
       <section className="relative flex min-h-[560px] w-full flex-col overflow-hidden bg-gradient-to-b from-koperasi-darkred via-koperasi-red to-[#8E1B1B] md:min-h-[680px]">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.06]"
-          style={{ backgroundImage: "repeating-linear-gradient(45deg, #fff 0 2px, transparent 2px 22px)" }} />
-        <div aria-hidden="true" className="absolute -right-32 top-1/4 h-[28rem] w-[28rem] rounded-full bg-koperasi-gold/15 blur-3xl" />
-        <div aria-hidden="true" className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
+        <MeshGradient />
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[#121212] from-[12%] via-[#121212]/70 via-[45%] to-transparent" />
 
         <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-end px-4 pb-10 pt-24 md:px-6 md:pb-16">
@@ -115,15 +115,15 @@ export function LandingContent() {
                 Koperasi Desa/Kelurahan Merah Putih
               </p>
               <h1 className="mt-2 font-heading text-4xl font-bold leading-[1.1] md:text-6xl">
-                {hero.title || FALLBACK_HERO.title}
+                <SplitLines text={(hero.title || FALLBACK_HERO.title).replace(" — ", "\n")} />
               </h1>
               <p className="mt-3 font-heading text-lg font-semibold text-koperasi-gold md:text-2xl">
                 {hero.subtitle || FALLBACK_HERO.subtitle}
               </p>
-              <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/80 md:text-base">
+              <p data-hero="para" className="mt-4 max-w-xl text-sm leading-relaxed text-white/80 md:text-base">
                 {hero.body || FALLBACK_HERO.body}
               </p>
-              <div className="mt-7 flex flex-wrap gap-3">
+              <div data-hero="para" className="mt-7 flex flex-wrap gap-3">
                 <Link href="/katalog" className="inline-flex items-center gap-2 rounded-[10px] bg-koperasi-gold px-5 py-3 text-sm font-bold text-neutral-900 shadow-[0_10px_30px_rgba(249,168,37,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105 md:px-6 md:text-base">
                   <Icon name="cart" className="h-5 w-5" /> Belanja di Gerai
                   <Icon name="arrowRight" className="h-4 w-4" />
@@ -131,6 +131,41 @@ export function LandingContent() {
                 <Link href="/register" className="inline-flex items-center gap-2 rounded-[10px] bg-white px-5 py-3 text-sm font-bold text-[#121212] transition-colors duration-200 hover:bg-white/90 md:px-6 md:text-base">
                   Daftar Keanggotaan Koperasi <Icon name="arrowRight" className="h-4 w-4" />
                 </Link>
+              </div>
+            </div>
+            {/* Mockup perangkat: placeholder bergaya (GATE-1 #2) — device reveal dari samar ke pekat */}
+            <div data-hero="device" className="pointer-events-none hidden w-[300px] shrink-0 select-none lg:block" aria-hidden="true">
+              <div className="relative">
+                {/* perangkat layar lebar (dashboard admin) terpotong tepi kanan */}
+                <div className="absolute -right-16 top-6 h-[210px] w-[280px] overflow-hidden rounded-2xl bg-white/95 shadow-[0_30px_70px_rgba(0,0,0,0.35)] ring-1 ring-black/5">
+                  <div className="flex items-center gap-1.5 border-b border-neutral-100 bg-neutral-50 px-3 py-2">
+                    <span className="h-2 w-2 rounded-full bg-koperasi-red/60" />
+                    <span className="h-2 w-2 rounded-full bg-koperasi-gold/70" />
+                    <span className="h-2 w-2 rounded-full bg-neutral-300" />
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 p-3">
+                    <div className="col-span-2 h-16 rounded-lg bg-gradient-to-br from-koperasi-red to-koperasi-darkred" />
+                    <div className="h-16 rounded-lg bg-neutral-100" />
+                    <div className="h-10 rounded-lg bg-neutral-100" />
+                    <div className="h-10 rounded-lg bg-neutral-100" />
+                    <div className="h-10 rounded-lg bg-koperasi-gold/25" />
+                  </div>
+                </div>
+                {/* ponsel di depan */}
+                <div className="relative z-10 ml-2 w-[132px] overflow-hidden rounded-[22px] border-[6px] border-neutral-900 bg-white shadow-[0_25px_55px_rgba(0,0,0,0.45)]">
+                  <div className="mx-auto mt-1 h-1 w-10 rounded-full bg-neutral-800" />
+                  <div className="space-y-2 p-2.5">
+                    <div className="h-16 rounded-lg bg-gradient-to-br from-koperasi-red via-[#E0574F] to-koperasi-gold" />
+                    <div className="h-2 w-3/4 rounded-full bg-neutral-200" />
+                    <div className="h-2 w-1/2 rounded-full bg-neutral-200" />
+                    <div className="grid grid-cols-2 gap-1.5 pt-1">
+                      <div className="h-9 rounded-md bg-neutral-100" />
+                      <div className="h-9 rounded-md bg-neutral-100" />
+                      <div className="h-9 rounded-md bg-neutral-100" />
+                      <div className="h-9 rounded-md bg-neutral-100" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -170,7 +205,7 @@ export function LandingContent() {
           />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {LAYANAN.map((s, i) => (
-              <div key={s.title} className="group rounded-2xl bg-[#F2F3F7] p-7 transition-all duration-200 hover:-translate-y-1 hover:bg-white hover:shadow-[0_18px_45px_rgba(198,40,40,0.12)] hover:ring-1 hover:ring-koperasi-red/15">
+              <div key={s.title} data-motion="fade-slide" data-motion-index={i} className="group rounded-2xl bg-[#F2F3F7] p-7 transition-all duration-200 hover:-translate-y-1 hover:bg-white hover:shadow-[0_18px_45px_rgba(198,40,40,0.12)] hover:ring-1 hover:ring-koperasi-red/15">
                 <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-koperasi-red text-white shadow-[0_10px_25px_rgba(198,40,40,0.3)] transition-transform duration-200 group-hover:scale-105">
                   <Icon name={s.icon} className="h-7 w-7" />
                 </div>
@@ -191,7 +226,7 @@ export function LandingContent() {
             title="Berbadan Hukum, Dikelola Modern, Dipercaya Warga"
           />
           <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="rounded-2xl bg-koperasi-red p-8 text-white shadow-[0_20px_50px_rgba(198,40,40,0.25)] md:p-10">
+            <div data-motion="fade-slide" className="rounded-2xl bg-koperasi-red p-8 text-white shadow-[0_20px_50px_rgba(198,40,40,0.25)] md:p-10">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-koperasi-gold">
                 <Icon name="store" className="h-3.5 w-3.5" /> Tentang Kami
               </div>
@@ -209,7 +244,7 @@ export function LandingContent() {
                 </div>
               </div>
             </div>
-            <div className="rounded-2xl bg-white p-8 shadow-[var(--shadow-md)] md:p-10">
+            <div data-motion="fade-slide" data-motion-index="1" className="rounded-2xl bg-white p-8 shadow-[var(--shadow-md)] md:p-10">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-koperasi-red/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-koperasi-red">
                 <Icon name="check" className="h-3.5 w-3.5" /> Visi & Misi
               </div>
@@ -242,7 +277,7 @@ export function LandingContent() {
           />
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {MANFAAT.map((m, i) => (
-              <div key={m} className="flex items-center gap-3 rounded-xl border border-neutral-100 bg-[#F2F3F7] px-5 py-4 transition-colors duration-200 hover:border-koperasi-red/30 hover:bg-white">
+              <div key={m} data-motion="fade-slide" data-motion-index={i % 4} className="flex items-center gap-3 rounded-xl border border-neutral-100 bg-[#F2F3F7] px-5 py-4 transition-colors duration-200 hover:border-koperasi-red/30 hover:bg-white">
                 <span className="font-heading text-xl font-bold text-koperasi-red/25">{String(i + 1).padStart(2, "0")}</span>
                 <span className="text-sm font-medium leading-snug text-neutral-700">{m}</span>
               </div>
@@ -266,7 +301,7 @@ export function LandingContent() {
               { name: "Bendahara", role: "Pengurus Harian" },
               { name: "Manajer Unit Gerai", role: "Manajer Usaha" }
             ]).map((p) => (
-              <div key={p.name} className="group rounded-2xl bg-white p-7 text-center shadow-[var(--shadow-sm)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[var(--shadow-lg)]">
+              <div key={p.name} data-motion="fade-slide" data-motion-index={board.indexOf(p)} className="group rounded-2xl bg-white p-7 text-center shadow-[var(--shadow-sm)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[var(--shadow-lg)]">
                 <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-koperasi-red to-koperasi-darkred font-heading text-2xl font-bold text-white shadow-[0_12px_30px_rgba(198,40,40,0.3)] ring-4 ring-koperasi-gold/30">
                   {(p.name || "?")[0]}
                 </div>

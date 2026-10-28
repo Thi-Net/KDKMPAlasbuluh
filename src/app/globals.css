@@ -45,3 +45,56 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* ============ Motion tokens (docs/motion/MOTION-SPEC.md) ============ */
+:root {
+  --motion-dur-nav: 280ms;
+  --motion-dur-text: 400ms;
+  --motion-dur-text-slow: 1000ms;
+  --motion-dur-device: 1080ms;
+  --motion-dur-exit: 300ms;
+  --motion-dur-ambient: 16000ms;
+  --motion-delay-nav: 640ms;
+  --motion-stagger-nav: 80ms;
+  --motion-delay-device: 1240ms;
+  --motion-delay-headline: 1480ms;
+  --motion-stagger-headline: 160ms;
+  --motion-delay-paragraph: 2240ms;
+  --motion-stagger-paragraph: 60ms;
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-text: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-ambient: cubic-bezier(0.37, 0, 0.63, 1);
+  --motion-shift-text: 16px;
+  --motion-shift-device: 14px;
+  --motion-viewport-trigger: 85%;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-dur-nav: 1ms; --motion-dur-text: 1ms; --motion-dur-text-slow: 1ms;
+    --motion-dur-device: 1ms; --motion-dur-exit: 1ms;
+    --motion-delay-nav: 0ms; --motion-delay-device: 0ms; --motion-delay-headline: 0ms; --motion-delay-paragraph: 0ms;
+    --motion-stagger-nav: 0ms; --motion-stagger-headline: 0ms; --motion-stagger-paragraph: 0ms;
+    --motion-shift-text: 0px; --motion-shift-device: 0px;
+  }
+}
+/* Progressive enhancement: state sembunyi hanya saat JS aktif (.js-motion dipasang JS) */
+.js-motion [data-motion="fade-slide"] { opacity: 0; transform: translateX(calc(-1 * var(--motion-shift-text))); }
+.js-motion [data-motion="device-reveal"] { opacity: 0; transform: translateX(calc(-1 * var(--motion-shift-device))); filter: saturate(0.6); }
+.js-motion .mesh-layer { will-change: transform; }
+@media (prefers-reduced-motion: reduce) {
+  .js-motion [data-motion] { opacity: 1 !important; transform: none !important; filter: none !important; }
+  .mesh-layer { animation: none !important; }
+}
+@media (hover: hover) {
+  .motion-hover-lift { transition: transform 200ms var(--ease-soft), box-shadow 200ms var(--ease-soft); }
+  .motion-hover-lift:hover { transform: translateY(-2px); }
+}
+/* State awal hero (hanya saat JS aktif); dibuka oleh useHeroEntrance */
+.js-motion [data-hero="headline-line"] { opacity: 0; transform: translateX(var(--motion-shift-text)); }
+.js-motion [data-hero="nav-link"] { opacity: 0; }
+.js-motion [data-hero="para"] { opacity: 0; }
+.js-motion [data-hero="device"] { opacity: 0; transform: translateX(calc(-1 * var(--motion-shift-device))); filter: saturate(0.6); }
+@media (prefers-reduced-motion: reduce) {
+  .js-motion [data-hero] { opacity: 1 !important; transform: none !important; filter: none !important; }
+}
