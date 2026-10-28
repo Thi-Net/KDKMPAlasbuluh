@@ -79,10 +79,10 @@ function SectionHead({ eyebrow, title, desc, light }) {
 
 export function LandingContent() {
   useHeroEntrance();
-  useRevealOnScroll();
   const [data, setData] = useState(null);
-  const [dbError, setDbError] = useState(false);
   const [products, setProducts] = useState([]);
+  const [dbError, setDbError] = useState(false);
+  useRevealOnScroll([data, products]);
 
   useEffect(() => {
     fetch("/api/v1/cms").then((r) => r.json()).then((j) => { if (j.success) setData(j.data); else setDbError(true); }).catch(() => setDbError(true));

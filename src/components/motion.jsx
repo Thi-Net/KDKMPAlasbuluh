@@ -23,7 +23,7 @@ function prefersReduced() {
  * FadeSlide — reveal sekali jalan saat masuk viewport (IntersectionObserver).
  * data-motion="fade-slide"; delay via style (token dibaca CSS).
  */
-export function useRevealOnScroll() {
+export function useRevealOnScroll(deps = []) {
   useEffect(() => {
     if (prefersReduced()) return;
     const els = Array.from(document.querySelectorAll('[data-motion="fade-slide"]:not([data-motion-done])'));
@@ -47,7 +47,7 @@ export function useRevealOnScroll() {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, deps); // re-scan saat konten dinamis (CMS/produk) selesai dimuat
 }
 
 /** Animasi masuk hero sekali jalan: set style transisi sesuai token lalu buka state. */

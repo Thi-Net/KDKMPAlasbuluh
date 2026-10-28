@@ -6,9 +6,9 @@ const ROLE_FOR = [
   { prefix: "/admin", roles: ["admin"] },
   { prefix: "/employee", roles: ["admin", "employee"] },
   { prefix: "/katalog", roles: ["customer", "admin", "employee"] },
-  { prefix: "/keranjang", roles: ["customer"] },
-  { prefix: "/checkout", roles: ["customer"] },
-  { prefix: "/pesanan", roles: ["customer"] }
+  { prefix: "/keranjang", roles: ["customer", "admin", "employee"] },
+  { prefix: "/checkout", roles: ["customer", "admin", "employee"] },
+  { prefix: "/pesanan", roles: ["customer", "admin", "employee"] }
 ];
 
 const HOME_BY_ROLE = { admin: "/admin", employee: "/employee", customer: "/katalog" };
