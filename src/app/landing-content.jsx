@@ -205,7 +205,7 @@ export function LandingContent() {
           />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {LAYANAN.map((s, i) => (
-              <div key={s.title} data-motion="fade-slide" data-motion-index={i} className="group rounded-2xl bg-[#F2F3F7] p-7 transition-all duration-200 hover:-translate-y-1 hover:bg-white hover:shadow-[0_18px_45px_rgba(198,40,40,0.12)] hover:ring-1 hover:ring-koperasi-red/15">
+              <div key={s.title} data-motion="fade-slide" data-motion-index={i} className="group card card-hover p-7">
                 <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-koperasi-red text-white shadow-[0_10px_25px_rgba(198,40,40,0.3)] transition-transform duration-200 group-hover:scale-105">
                   <Icon name={s.icon} className="h-7 w-7" />
                 </div>
@@ -219,7 +219,7 @@ export function LandingContent() {
       </section>
 
       {/* ============ PROFIL / VISI MISI ============ */}
-      <section id="profil" className="bg-[#F5F6F6] py-16 md:py-24">
+      <section id="profil" className="bg-[#FAF9F7] py-16 md:py-24">
         <div className="mx-auto max-w-7xl px-4 md:px-6">
           <SectionHead
             eyebrow="Profil Koperasi"
@@ -277,7 +277,7 @@ export function LandingContent() {
           />
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {MANFAAT.map((m, i) => (
-              <div key={m} data-motion="fade-slide" data-motion-index={i % 4} className="flex items-center gap-3 rounded-xl border border-neutral-100 bg-[#F2F3F7] px-5 py-4 transition-colors duration-200 hover:border-koperasi-red/30 hover:bg-white">
+              <div key={m} data-motion="fade-slide" data-motion-index={i % 4} className="card card-hover flex items-center gap-3 px-5 py-4">
                 <span className="font-heading text-xl font-bold text-koperasi-red/25">{String(i + 1).padStart(2, "0")}</span>
                 <span className="text-sm font-medium leading-snug text-neutral-700">{m}</span>
               </div>
@@ -287,7 +287,7 @@ export function LandingContent() {
       </section>
 
       {/* ============ PENGURUS ============ */}
-      <section className="bg-[#F5F6F6] py-16 md:py-24">
+      <section className="bg-[#FAF9F7] py-16 md:py-24">
         <div className="mx-auto max-w-7xl px-4 md:px-6">
           <SectionHead
             eyebrow="Struktur Organisasi"
@@ -327,14 +327,14 @@ export function LandingContent() {
             </Link>
           </div>
           {products.length === 0 ? (
-            <div className="rounded-2xl bg-[#F2F3F7] p-10 text-center text-sm text-neutral-400">
+            <div className="card p-10 text-center text-sm text-neutral-400">
               Katalog belum tersedia — database belum terhubung atau belum ada produk aktif.
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               {products.map((p) => (
-                <Link key={p.id} href="/katalog" className="group overflow-hidden rounded-2xl bg-[#F2F3F7] transition-all duration-200 hover:-translate-y-1 hover:bg-white hover:shadow-[0_18px_45px_rgba(0,0,0,0.1)]">
-                  <div className="relative flex h-32 items-center justify-center bg-white text-neutral-200 transition-colors duration-200 group-hover:text-koperasi-red/20">
+                <Link key={p.id} href="/katalog" className="group card card-hover overflow-hidden">
+                  <div className="relative flex h-32 items-center justify-center bg-gradient-to-br from-[#FBF7F0] to-[#F4EDE2] text-neutral-300 transition-colors duration-200 group-hover:text-koperasi-red/30">
                     <Icon name="box" className="h-12 w-12" />
                     {p.is_local_alasbuluh && (
                       <span className="absolute left-2.5 top-2.5 inline-flex items-center gap-1 rounded-full bg-koperasi-red px-2.5 py-1 text-[10px] font-bold text-white shadow-md">
