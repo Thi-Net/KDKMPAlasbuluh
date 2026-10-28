@@ -11,7 +11,7 @@ export default function AuditPage() {
       <h1 className="mb-2 text-xl font-bold">Audit Log — Mesin Waktu Koperasi</h1>
       <p className="mb-4 text-sm text-neutral-500">Rekam jejak permanen perubahan stok, produk, dan laporan keuangan.</p>
       <div className="card overflow-x-auto p-4">
-        <table className="w-full text-sm">
+        <table className="table-clean">
           <thead><tr className="border-b text-left text-xs text-neutral-500"><th className="py-1">Waktu</th><th>Pelaku</th><th>Aksi</th><th>Entitas</th><th>Detail</th></tr></thead>
           <tbody>
             {logs.map((l) => (

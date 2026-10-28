@@ -36,7 +36,7 @@ export default function KeuanganPage() {
       <h1 className="mb-4 text-xl font-bold">Kas & Tutup Kas Harian</h1>
       {msg && <div className="mb-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">{msg}</div>}
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="card p-5">
+        <div className="card card-pad">
           <h2 className="mb-3 font-semibold">Input Pengeluaran Harian</h2>
           <label className="label">Kategori</label>
           <select className="input mb-3" value={exp.category} onChange={(e) => setExp({ ...exp, category: e.target.value })}>
@@ -49,7 +49,7 @@ export default function KeuanganPage() {
           <button className="btn-primary w-full" onClick={addExpense}>Catat Pengeluaran</button>
         </div>
 
-        <div className="card p-5">
+        <div className="card card-pad">
           <h2 className="mb-3 font-semibold">Tutup Kas Harian (Satu Layar)</h2>
           <label className="label">Kas Awal (Rp)</label>
           <input className="input mb-3" type="number" value={opening} onChange={(e) => setOpening(e.target.value)} />

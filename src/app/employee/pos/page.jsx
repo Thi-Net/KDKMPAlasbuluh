@@ -55,7 +55,7 @@ export default function PosPage() {
             ))}
           </div>
         </div>
-        <div className="card p-4">
+        <div className="card card-pad">
           <h2 className="mb-2 font-semibold">Nota</h2>
           {cart.length === 0 && <p className="text-sm text-neutral-400">Klik barang untuk menambah.</p>}
           {cart.map((i) => (

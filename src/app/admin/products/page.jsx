@@ -42,7 +42,7 @@ export default function AdminProducts() {
       <h1 className="mb-4 text-xl font-bold">Master Produk & Stok Gerai</h1>
       {msg && <div className="mb-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">{msg}</div>}
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="card p-5">
+        <div className="card card-pad">
           <h2 className="mb-3 font-semibold">+ Produk Baru</h2>
           <input className="input mb-2" placeholder="Nama produk" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <select className="input mb-2" value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })}>
@@ -61,7 +61,7 @@ export default function AdminProducts() {
           </label>
           <button className="btn-primary w-full" onClick={createProduct}>Simpan Produk</button>
         </div>
-        <div className="card p-5">
+        <div className="card card-pad">
           <h2 className="mb-3 font-semibold">📦 Input Barang Masuk (Restock / Kulakan)</h2>
           <select className="input mb-2" value={restock.product_id} onChange={(e) => setRestock({ ...restock, product_id: e.target.value })}>
             <option value="">— Pilih produk —</option>
@@ -78,7 +78,7 @@ export default function AdminProducts() {
 
       <div className="card mt-4 overflow-x-auto p-4">
         <h2 className="mb-2 font-semibold">Daftar Produk ({products.length})</h2>
-        <table className="w-full text-sm">
+        <table className="table-clean">
           <thead><tr className="border-b text-left text-xs text-neutral-500"><th className="py-1">Nama</th><th>Kategori</th><th>HPP</th><th>Harga</th><th>Stok</th><th>Lokal</th><th>Status</th><th>Aksi</th></tr></thead>
           <tbody>
             {products.map((p) => (

@@ -71,11 +71,11 @@ export default function LaporanPage() {
           </div>
         </div>
       )}
-      <div className="card p-5">
+      <div className="card card-pad">
         <h2 className="mb-3 text-lg font-bold">Detail Penjualan Harian</h2>
         {sales.length === 0 ? <p className="text-sm text-neutral-400">Belum ada transaksi pada periode ini.</p> : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="table-clean">
               <thead><tr className="border-b text-left text-xs text-neutral-500"><th className="py-2">Tanggal</th><th>Online</th><th>Offline</th><th>Total</th><th>Order Online</th></tr></thead>
               <tbody>
                 {sales.map((r) => (

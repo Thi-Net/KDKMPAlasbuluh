@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fmtRp, ORDER_STATUS_LABEL } from "@/components/util";
+import { Icon } from "@/components/Icon";
 
 const COLUMNS = [
   { key: "NEW", label: "📥 Pesanan Baru", next: "confirm", nextLabel: "Kemas Pesanan" },
@@ -78,26 +79,32 @@ export default function EmployeeDeliveryPage() {
           <button className="btn-primary" onClick={() => { act(notif.id, "claim"); setNotif(null); }}>Ambil Order</button>
         </div>
       )}
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold">Delivery Command Center</h1>
-        <span className="text-xs text-neutral-500">Pembaruan otomatis tiap 4 detik · alarm aktif setelah interaksi pertama</span>
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <h1 className="font-heading text-2xl font-extrabold text-neutral-900">Delivery Command Center</h1>
+          <p className="text-sm text-neutral-500">Papan alur pesanan — pembaruan otomatis tiap 4 detik.</p>
+        </div>
+        <span className="badge-green"><Icon name="check" className="h-3 w-3" /> Alarm aktif setelah interaksi pertama</span>
       </div>
       {err && <div className="mb-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">{err}</div>}
       <div className="grid gap-4 lg:grid-cols-4">
         {COLUMNS.map((col) => (
-          <div key={col.key} className="card bg-neutral-50 p-3">
-            <h2 className="mb-3 text-sm font-bold text-neutral-700">{col.label}</h2>
+          <div key={col.key} className="card !bg-[#FAF9F7] card-pad !p-3">
+            <h2 className="mb-3 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-neutral-500">
+              <span className="flex h-5 w-5 items-center justify-center rounded-md bg-koperasi-red/10 text-[10px] font-black text-koperasi-red">{orders.filter((o) => (col.key === "NEW" ? ["NEW", "CONFIRMED"].includes(o.status) : col.key === "ON_DELIVERY" ? o.status === "ON_DELIVERY" : col.key === "PACKING" ? o.status === "PACKING" : o.status === col.key)).length}</span>
+              {col.label.replace(/^[^A-Za-z]+/, "")}
+            </h2>
             <div className="flex flex-col gap-3">
               {orders.filter((o) => (col.key === "NEW" ? ["NEW", "CONFIRMED"].includes(o.status) : col.key === "ON_DELIVERY" ? o.status === "ON_DELIVERY" : col.key === "PACKING" ? o.status === "PACKING" : o.status === col.key)).map((o) => {
                 const waitMin = Math.floor((Date.now() - new Date(o.created_at).getTime()) / 60000);
                 const slaLate = col.key === "NEW" && waitMin > 5;
                 return (
-                  <div key={o.id} className={`rounded-lg border bg-white p-3 text-sm shadow-sm ${slaLate ? "border-red-400 ring-1 ring-red-200" : ""}`}>
+                  <div key={o.id} className={`rounded-xl border border-neutral-200 bg-white p-3 text-sm shadow-sm transition-shadow hover:shadow-md ${slaLate ? "border-red-400 ring-2 ring-red-100" : ""}`}>
                     <div className="font-bold">{o.order_number}</div>
                     <div className="text-xs text-neutral-600">{o.customer_name}{o.dusun_name ? ` · ${o.dusun_name}` : ""}</div>
-                    {o.fulfillment_type === "DELIVERY" && <div className="text-xs text-neutral-500">📍 {o.delivery_address || "-"} — patokan: {o.delivery_landmark_notes || "-"}</div>}
+                    {o.fulfillment_type === "DELIVERY" && <div className="mt-0.5 text-xs text-neutral-500">{o.delivery_address || "-"} — patokan: {o.delivery_landmark_notes || "-"}</div>}
                     <div className="mt-1 font-semibold text-koperasi-red">{fmtRp(o.total_amount)} <span className="text-[10px] font-normal text-neutral-400">COD</span></div>
-                    <div className={`mt-1 text-[11px] ${slaLate ? "font-bold text-red-600" : "text-neutral-400"}`}>⏱ {waitMin} menit menungu{slaLate ? " — MELEWATI SLA 5 MENIT!" : ""}</div>
+                    <div className={`mt-1 text-[11px] ${slaLate ? "font-bold text-red-600" : "text-neutral-400"}`}>{waitMin} menit menungu{slaLate ? " — LEWAT SLA 5 MENIT!" : ""}</div>
                     {(o.items || []).map((it, i) => <div key={i} className="text-xs text-neutral-600">{it.qty}× {it.name}</div>)}
                     {o.courier_name && <div className="mt-1 text-[11px] text-green-700">Diproses oleh {o.courier_name}</div>}
                     <div className="mt-2 flex flex-wrap gap-1">

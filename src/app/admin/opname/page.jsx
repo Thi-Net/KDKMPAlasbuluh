@@ -19,11 +19,14 @@ export default function AdminOpname() {
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-6">
-      <h1 className="mb-4 text-xl font-bold">Approval Stock Opname</h1>
+      <div className="mb-5">
+        <h1 className="font-heading text-2xl font-extrabold text-neutral-900">Approval Stock Opname</h1>
+        <p className="text-sm text-neutral-500">Setujui atau tolak sesi opname dari karyawan.</p>
+      </div>
       {msg && <div className="mb-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">{msg}</div>}
       <div className="flex flex-col gap-3">
         {sessions.map((s) => (
-          <div key={s.id} className="card p-4">
+          <div key={s.id} className="card card-pad">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <div className="font-semibold">{s.title} <span className="text-xs text-neutral-400">({s.session_code})</span></div>

@@ -22,7 +22,10 @@ export default function AdminUsers() {
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-6">
-      <h1 className="mb-4 text-xl font-bold">Manajemen Akun</h1>
+      <div className="mb-5">
+        <h1 className="font-heading text-2xl font-extrabold text-neutral-900">Manajemen Akun</h1>
+        <p className="text-sm text-neutral-500">Buat dan kelola akun karyawan & admin.</p>
+      </div>
       {msg && <div className="mb-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">{msg}</div>}
       <div className="card mb-4 p-5">
         <h2 className="mb-3 font-semibold">+ Buat Akun Karyawan / Admin</h2>
@@ -37,7 +40,7 @@ export default function AdminUsers() {
         <button className="btn-primary mt-3" onClick={create}>Buat Akun</button>
       </div>
       <div className="card overflow-x-auto p-4">
-        <table className="w-full text-sm">
+        <table className="table-clean">
           <thead><tr className="border-b text-left text-xs text-neutral-500"><th className="py-1">Nama</th><th>HP</th><th>Peran</th><th>Poin SHU</th><th>Status</th><th>Aksi</th></tr></thead>
           <tbody>
             {users.map((u) => (
