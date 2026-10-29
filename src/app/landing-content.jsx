@@ -107,23 +107,23 @@ export function LandingContent() {
   return (
     <div>
       {/* ============ HERO FULL-BLEED (ala simkopdes) ============ */}
-      <section className="relative flex min-h-[560px] w-full flex-col overflow-hidden bg-gradient-to-b from-koperasi-darkred via-koperasi-red to-[#8E1B1B] md:min-h-[680px]">
+      <section className="relative flex min-h-[480px] w-full flex-col overflow-hidden bg-gradient-to-b from-koperasi-darkred via-koperasi-red to-[#8E1B1B] md:min-h-[620px]">
         <MeshGradient />
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[#121212] from-[12%] via-[#121212]/70 via-[45%] to-transparent" />
 
-        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-end px-4 pb-10 pt-24 md:px-6 md:pb-16">
+        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-end px-4 pb-6 pt-16 md:px-6 md:pb-10">
           <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-[560px] text-white">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-koperasi-gold md:text-sm">
                 Koperasi Desa/Kelurahan Merah Putih
               </p>
-              <h1 className="mt-2 font-heading text-4xl font-bold leading-[1.1] md:text-6xl">
+              <h1 className="mt-2 font-heading text-4xl font-bold leading-[1.08] md:text-5xl xl:text-6xl">
                 <SplitLines text={(hero.title || FALLBACK_HERO.title).replace(" — ", "\n")} />
               </h1>
-              <p className="mt-3 font-heading text-lg font-semibold text-koperasi-gold md:text-2xl">
+              <p className="mt-2 font-heading text-lg font-semibold text-koperasi-gold md:text-xl">
                 {hero.subtitle || FALLBACK_HERO.subtitle}
               </p>
-              <p data-hero="para" className="mt-4 max-w-xl text-sm leading-relaxed text-white/80 md:text-base">
+              <p data-hero="para" className="mt-3 max-w-xl text-sm leading-relaxed text-white/80 md:text-[15px]">
                 {hero.body || FALLBACK_HERO.body}
               </p>
               <div data-hero="para" className="mt-7 flex flex-wrap gap-3">
@@ -137,7 +137,7 @@ export function LandingContent() {
               </div>
               {/* ticker produk live (harga berjalan ala marketplace) */}
               {!dbError && tickerProducts.length > 0 && (
-                <div className="mt-7 max-w-[560px] overflow-hidden rounded-full border border-white/15 bg-white/10 backdrop-blur-sm" data-hero="para">
+                <div className="mt-6 max-w-[560px] overflow-hidden rounded-full border border-white/15 bg-white/10 backdrop-blur-sm" data-hero="para">
                   <div className="flex items-center gap-3 px-4 py-2">
                     <span className="shrink-0 rounded-full bg-koperasi-gold px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-neutral-900">Harga Gerai</span>
                     <div className="relative flex-1 overflow-hidden">
@@ -191,7 +191,7 @@ export function LandingContent() {
           </div>
 
           {/* statistik overlay hero (ala simkopdes) */}
-          <div className="mt-12 grid grid-cols-2 gap-4 border-t border-white/15 pt-6 sm:grid-cols-4 md:mt-16">
+          <div className="mt-8 grid grid-cols-2 gap-4 border-t border-white/15 pt-5 sm:grid-cols-4 md:mt-10">
             {statItems.map((s) => (
               <div key={s.label} className="flex items-center gap-3">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/10 text-koperasi-gold ring-1 ring-white/15">
