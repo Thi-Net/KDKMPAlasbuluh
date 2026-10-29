@@ -6,6 +6,7 @@ import { Icon } from "@/components/Icon";
 
 const GOLD = "#F9A825", RED = "#C62828";
 const DONUT_COLORS = ["#C62828", "#F9A825", "#26A69A"];
+const fmtTgl = (iso) => iso ? new Date(iso).toLocaleString("id-ID", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }) : "—";
 const CAT_LABEL = { KULAKAN_STOK: "Kulakan Stok", OPERASIONAL_GERAI: "Operasional Gerai", BBM_KURIR: "BBM Kurir", GAJI_INSENTIF: "Gaji & Insentif", LAINNYA: "Lainnya" };
 
 // Palet kartu KPI: tiap metrik punya warna sendiri (hidup & ceria)
@@ -164,10 +165,11 @@ export default function AdminDashboard() {
             {act.recent_orders.length === 0 ? <p className="text-sm text-neutral-400">Belum ada transaksi.</p> : (
               <div className="overflow-x-auto">
                 <table className="table-clean">
-                  <thead><tr><th>No. Order</th><th>Kanal</th><th>Total</th><th>Status</th></tr></thead>
+                  <thead><tr><th>Tanggal</th><th>No. Order</th><th>Kanal</th><th>Total</th><th>Status</th></tr></thead>
                   <tbody>
                     {act.recent_orders.map((o) => (
                       <tr key={o.order_number}>
+                        <td className="whitespace-nowrap text-xs">{fmtTgl(o.created_at)}</td>
                         <td className="whitespace-nowrap font-semibold">{o.order_number}</td>
                         <td className="whitespace-nowrap text-xs">{o.channel === "OFFLINE_POS" ? "Kasir" : "Online"} · {o.fulfillment_type === "DELIVERY" ? "Antar" : o.fulfillment_type === "PICKUP" ? "Ambil" : "Langsung"}</td>
                         <td className="whitespace-nowrap font-bold">{fmtRp(o.total_amount)}</td>
@@ -183,10 +185,11 @@ export default function AdminDashboard() {
                 <h3 className="mb-2 mt-5 flex items-center gap-2 text-sm font-bold text-neutral-700"><Icon name="cash" className="h-4 w-4 text-green-600" /> Penjualan Kasir Cepat (POS) Terakhir</h3>
                 <div className="overflow-x-auto">
                   <table className="table-clean">
-                    <thead><tr><th>No.</th><th>Keterangan</th><th>Total</th></tr></thead>
+                    <thead><tr><th>Tanggal</th><th>No.</th><th>Keterangan</th><th>Total</th></tr></thead>
                     <tbody>
                       {act.recent_pos.map((f) => (
                         <tr key={f.number}>
+                          <td className="whitespace-nowrap text-xs">{fmtTgl(f.created_at)}</td>
                           <td className="whitespace-nowrap font-semibold">{f.number}</td>
                           <td className="max-w-[200px] truncate text-xs text-neutral-500">{f.description}</td>
                           <td className="whitespace-nowrap font-bold text-green-700">{fmtRp(f.amount)}</td>
