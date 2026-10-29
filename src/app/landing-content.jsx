@@ -135,6 +135,23 @@ export function LandingContent() {
                   Daftar Keanggotaan Koperasi <Icon name="arrowRight" className="h-4 w-4" />
                 </Link>
               </div>
+              {/* ticker produk live (harga berjalan ala marketplace) */}
+              {!dbError && tickerProducts.length > 0 && (
+                <div className="mt-7 max-w-[560px] overflow-hidden rounded-full border border-white/15 bg-white/10 backdrop-blur-sm" data-hero="para">
+                  <div className="flex items-center gap-3 px-4 py-2">
+                    <span className="shrink-0 rounded-full bg-koperasi-gold px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-neutral-900">Harga Gerai</span>
+                    <div className="relative flex-1 overflow-hidden">
+                      <div className="flex w-max gap-8" style={{ animation: "ticker 28s linear infinite" }}>
+                        {[...tickerProducts, ...tickerProducts].map((tp, i) => (
+                          <span key={i} className="whitespace-nowrap text-xs font-semibold text-white/90">
+                            {tp.name} · <b className="text-koperasi-gold">{fmtRp(tp.selling_price)}</b>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             {/* Mockup perangkat: placeholder bergaya (GATE-1 #2) — device reveal dari samar ke pekat */}
             <div data-hero="device" className="pointer-events-none hidden w-[300px] shrink-0 select-none lg:block" aria-hidden="true">
@@ -172,24 +189,6 @@ export function LandingContent() {
               </div>
             </div>
           </div>
-
-          {/* ticker produk live (harga berjalan ala marketplace) */}
-          {!dbError && tickerProducts.length > 0 && (
-            <div className="mt-10 overflow-hidden rounded-full border border-white/15 bg-white/10 backdrop-blur-sm" data-hero="para">
-              <div className="flex items-center gap-3 px-4 py-2">
-                <span className="shrink-0 rounded-full bg-koperasi-gold px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-neutral-900">Harga Gerai</span>
-                <div className="relative flex-1 overflow-hidden">
-                  <div className="flex w-max gap-8" style={{ animation: "ticker 28s linear infinite" }}>
-                    {[...tickerProducts, ...tickerProducts].map((tp, i) => (
-                      <span key={i} className="whitespace-nowrap text-xs font-semibold text-white/90">
-                        {tp.name} · <b className="text-koperasi-gold">{fmtRp(tp.selling_price)}</b>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* statistik overlay hero (ala simkopdes) */}
           <div className="mt-12 grid grid-cols-2 gap-4 border-t border-white/15 pt-6 sm:grid-cols-4 md:mt-16">
