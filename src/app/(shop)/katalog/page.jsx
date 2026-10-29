@@ -30,12 +30,17 @@ export default function KatalogPage() {
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-6 md:py-8">
-      <div className="mb-5 flex items-end justify-between gap-3">
-        <div>
-          <h1 className="font-heading text-2xl font-extrabold text-neutral-900">Katalog Gerai</h1>
-          <p className="text-sm text-neutral-500">Kebutuhan pokok & produk UMKM warga Alasbuluh.</p>
+      <div className="mb-5 overflow-hidden rounded-[20px] bg-gradient-to-br from-koperasi-darkred via-koperasi-red to-[#E0574F] p-5 text-white shadow-[var(--shadow-red)] md:p-6">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h1 className="font-heading text-2xl font-extrabold">Katalog Gerai</h1>
+            <p className="mt-1 text-sm text-white/80">Kebutuhan pokok & produk UMKM warga Alasbuluh.</p>
+          </div>
+          <div className="hidden shrink-0 items-center gap-2 sm:flex">
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1.5 text-[11px] font-bold ring-1 ring-white/30"><Icon name="check" className="h-3 w-3" /> COD Aktif</span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1.5 text-[11px] font-bold ring-1 ring-white/30"><Icon name="truck" className="h-3 w-3" /> Antar ke Dusun</span>
+          </div>
         </div>
-        <span className="badge-red hidden sm:inline-flex"><Icon name="check" className="h-3 w-3" /> COD Aktif</span>
       </div>
 
       <div className="card mb-5 flex flex-col gap-2.5 p-3 sm:flex-row sm:items-center">

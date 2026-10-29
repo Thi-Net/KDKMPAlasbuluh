@@ -211,7 +211,7 @@ export function LandingContent() {
                 </div>
                 <h3 className="font-heading text-lg font-bold text-neutral-900">{s.title}</h3>
                 <p className="mt-2.5 text-sm leading-relaxed text-neutral-500">{s.desc}</p>
-                <div className="mt-4 text-xs font-bold text-koperasi-red">0{i + 1}</div>
+                <div className={`mt-4 inline-flex h-8 w-8 items-center justify-center rounded-lg font-heading text-xs font-black text-white ${["bg-koperasi-red", "bg-koperasi-gold", "bg-[#26A69A]", "bg-[#5E35B1]"][i % 4]}`}>{i + 1}</div>
               </div>
             ))}
           </div>

@@ -8,8 +8,10 @@ export default function KeranjangPage() {
   const { items, setQty, total } = useCart();
   return (
     <main className="mx-auto max-w-3xl px-4 py-6 md:py-8">
-      <h1 className="mb-1 font-heading text-2xl font-extrabold text-neutral-900">Keranjang Belanja</h1>
-      <p className="mb-5 text-sm text-neutral-500">{items.length ? `${items.length} jenis barang siap dipesan.` : "Belum ada barang."}</p>
+      <div className="mb-5 rounded-[20px] bg-gradient-to-br from-koperasi-gold to-[#FBC02D] p-5 text-neutral-900 shadow-[var(--shadow-gold)] md:p-6">
+        <h1 className="font-heading text-2xl font-extrabold">Keranjang Belanja</h1>
+        <p className="mt-1 text-sm font-semibold text-neutral-800">{items.length ? `${items.length} jenis barang siap dipesan.` : "Belum ada barang."}</p>
+      </div>
 
       {items.length === 0 ? (
         <div className="card p-12 text-center">

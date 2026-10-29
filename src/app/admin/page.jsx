@@ -1,10 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
-import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { fmtRp } from "@/components/util";
 import { Icon } from "@/components/Icon";
 
 const GOLD = "#F9A825", RED = "#C62828";
+const DONUT_COLORS = ["#C62828", "#F9A825", "#26A69A"];
+
+// Palet kartu KPI: tiap metrik punya warna sendiri (hidup & ceria)
+const KPI_STYLES = {
+  cash:   { bg: "linear-gradient(135deg,#C62828,#E0574F)", shadow: "rgba(198,40,40,.35)" },
+  chart:  { bg: "linear-gradient(135deg,#F9A825,#FBC02D)", shadow: "rgba(249,168,37,.4)" },
+  wallet: { bg: "linear-gradient(135deg,#2E7D32,#43A047)", shadow: "rgba(46,125,50,.35)" },
+  receipt:{ bg: "linear-gradient(135deg,#5E35B1,#7E57C2)", shadow: "rgba(94,53,177,.35)" },
+  box:    { bg: "linear-gradient(135deg,#00838F,#26A69A)", shadow: "rgba(0,131,143,.35)" },
+  warning:{ bg: "linear-gradient(135deg,#E65100,#FB8C00)", shadow: "rgba(230,81,0,.35)" }
+};
 
 export default function AdminDashboard() {
   const [d, setD] = useState(null);
@@ -30,6 +41,12 @@ export default function AdminDashboard() {
   const growth = Number(k.omzet_prev_month) > 0 ? ((Number(k.omzet_month) - Number(k.omzet_prev_month)) / Number(k.omzet_prev_month) * 100).toFixed(1) : "—";
   const grossProfit = Number(k.omzet_month) - Number(k.hpp_month);
 
+  const sumChart = d.chart.reduce((a, r) => ({ online: a.online + Number(r.online || 0), offline: a.offline + Number(r.offline || 0) }), { online: 0, offline: 0 });
+  const donutData = [
+    { name: "Online", value: sumChart.online },
+    { name: "Offline (POS)", value: sumChart.offline }
+  ].filter((e) => e.value > 0);
+
   const cards = [
     { label: "Omzet Hari Ini", value: fmtRp(k.omzet_today), icon: "cash" },
     { label: "Omzet Bulan Ini", value: fmtRp(k.omzet_month), sub: `${growth}% vs bulan lalu`, icon: "chart" },
@@ -44,18 +61,24 @@ export default function AdminDashboard() {
       {err && <div className="mb-3 rounded-xl bg-red-50 p-3 text-sm font-semibold text-red-700">{err}</div>}
 
       <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-3">
-        {cards.map((c) => (
-          <div key={c.label} className={`card card-hover card-pad ${c.warn ? "border-amber-300 bg-amber-50" : ""}`}>
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <div className="kpi-value">{c.value}</div>
-                <div className="kpi-label">{c.label}</div>
-                {c.sub && <div className="mt-1 text-[11px] font-semibold text-koperasi-gold">{c.sub}</div>}
+        {cards.map((c) => {
+          const st = KPI_STYLES[c.icon] || KPI_STYLES.cash;
+          return (
+            <div key={c.label} className="card card-hover overflow-hidden p-4 md:p-5">
+              <div className="flex items-center gap-3">
+                <span className="kpi-icon shrink-0 !h-12 !w-12" style={{ background: st.bg, boxShadow: `0 10px 24px -6px ${st.shadow}` }}>
+                  <Icon name={c.icon} className="h-6 w-6" />
+                </span>
+                <div className="min-w-0">
+                  <div className="font-heading text-xl font-extrabold leading-none text-neutral-900 md:text-2xl">{c.value}</div>
+                  <div className="kpi-label !mt-1.5">{c.label}</div>
+                </div>
               </div>
-              <span className="kpi-icon shrink-0"><Icon name={c.icon} className="h-5 w-5" /></span>
+              {c.sub && <div className="mt-3 rounded-lg bg-neutral-50 px-2.5 py-1.5 text-[11px] font-bold text-koperasi-gold">{c.sub}</div>}
+              {c.warn && <div className="mt-3 rounded-lg bg-orange-50 px-2.5 py-1.5 text-[11px] font-bold text-orange-600">Perlu disetor ke kas</div>}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="card panel-flag mt-4 card-pad">
@@ -83,6 +106,33 @@ export default function AdminDashboard() {
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
+        {/* Komposisi penjualan (donut) */}
+        <div className="card card-pad lg:row-span-2">
+          <h2 className="mb-3 flex items-center gap-2 font-heading text-sm font-bold"><Icon name="chart" className="h-4 w-4 text-koperasi-red" /> Komposisi Penjualan Bulan Ini</h2>
+          <ResponsiveContainer width="100%" height={210}>
+            <PieChart>
+              <Pie data={donutData} dataKey="value" nameKey="name" innerRadius={58} outerRadius={88} paddingAngle={4} cornerRadius={8}>
+                {donutData.map((e, i) => <Cell key={i} fill={DONUT_COLORS[i % DONUT_COLORS.length]} />)}
+              </Pie>
+              <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #eee", fontSize: 12 }} />
+              <Legend iconType="circle" iconSize={8} />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="mt-2 space-y-2.5">
+            {donutData.map((e, i) => {
+              const tot = donutData.reduce((a, b) => a + b.value, 0) || 1;
+              const pct = Math.round(e.value / tot * 100);
+              return (
+                <div key={e.name}>
+                  <div className="mb-1 flex justify-between text-xs font-bold"><span>{e.name}</span><span>{pct}%</span></div>
+                  <div className="h-2 overflow-hidden rounded-full bg-neutral-100">
+                    <div className="h-full rounded-full" style={{ width: `${pct}%`, background: DONUT_COLORS[i] }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
         <div className="card card-pad">
           <h2 className="mb-2 flex items-center gap-2 font-heading text-sm font-bold text-red-700"><Icon name="warning" className="h-4 w-4" /> Stok Kritis</h2>
           {d.low_stock.length === 0 ? <p className="text-sm text-neutral-400">Aman — tidak ada stok kritis.</p> :

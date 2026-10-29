@@ -28,8 +28,10 @@ function OrdersInner() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-6 md:py-8">
-      <h1 className="mb-1 font-heading text-2xl font-extrabold text-neutral-900">Pesanan Saya</h1>
-      <p className="mb-5 text-sm text-neutral-500">Status diperbarui otomatis setiap 5 detik.</p>
+      <div className="mb-5 rounded-[20px] bg-gradient-to-br from-[#5E35B1] to-[#7E57C2] p-5 text-white shadow-[0_12px_30px_-8px_rgba(94,53,177,.35)] md:p-6">
+        <h1 className="font-heading text-2xl font-extrabold">Pesanan Saya</h1>
+        <p className="mt-1 text-sm text-white/80">Status diperbarui otomatis setiap 5 detik.</p>
+      </div>
 
       {baru && (
         <div className="mb-4 flex items-start gap-2.5 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-900">
