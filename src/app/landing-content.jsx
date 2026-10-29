@@ -137,7 +137,7 @@ export function LandingContent() {
               </div>
               {/* ticker produk live (harga berjalan ala marketplace) */}
               {!dbError && tickerProducts.length > 0 && (
-                <div className="mt-6 max-w-[560px] overflow-hidden rounded-full border border-white/15 bg-white/10 backdrop-blur-sm" data-hero="para">
+                <div className="mt-6 max-w-[560px] overflow-hidden rounded-full border border-white/15 bg-white/10 backdrop-blur-sm">
                   <div className="flex items-center gap-3 px-4 py-2">
                     <span className="shrink-0 rounded-full bg-koperasi-gold px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-neutral-900">Harga Gerai</span>
                     <div className="relative flex-1 overflow-hidden">
