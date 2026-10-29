@@ -6,6 +6,7 @@ import { Icon } from "@/components/Icon";
 
 const GOLD = "#F9A825", RED = "#C62828";
 const DONUT_COLORS = ["#C62828", "#F9A825", "#26A69A"];
+const CAT_LABEL = { KULAKAN_STOK: "Kulakan Stok", OPERASIONAL_GERAI: "Operasional Gerai", BBM_KURIR: "BBM Kurir", GAJI_INSENTIF: "Gaji & Insentif", LAINNYA: "Lainnya" };
 
 // Palet kartu KPI: tiap metrik punya warna sendiri (hidup & ceria)
 const KPI_STYLES = {
@@ -20,11 +21,13 @@ const KPI_STYLES = {
 export default function AdminDashboard() {
   const [d, setD] = useState(null);
   const [closings, setClosings] = useState([]);
+  const [act, setAct] = useState(null);
   const [err, setErr] = useState("");
 
   const load = () => {
     fetch("/api/v1/admin?what=dashboard").then((r) => r.json()).then((j) => { if (j.success) setD(j.data); else setErr(j.error); }).catch(() => {});
     fetch("/api/v1/admin?what=closings").then((r) => r.json()).then((j) => { if (j.success) setClosings(j.data); }).catch(() => {});
+    fetch("/api/v1/admin?what=dashboard_activity").then((r) => r.json()).then((j) => { if (j.success) setAct(j.data); }).catch(() => {});
   };
   useEffect(() => { load(); }, []);
 
@@ -149,6 +152,58 @@ export default function AdminDashboard() {
           <div className="mt-1 text-sm">Tutup kas menunggu verifikasi: <b className="text-koperasi-red">{k.closing_pending}</b></div>
         </div>
       </div>
+
+      {act && (
+        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+          {/* Riwayat Transaksi Terakhir */}
+          <div className="card card-pad">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="flex items-center gap-2 font-heading text-base font-bold"><Icon name="receipt" className="h-4 w-4 text-koperasi-red" /> Riwayat Transaksi Terakhir</h2>
+              <a href="/admin/laporan" className="text-xs font-bold text-koperasi-red hover:underline">Lihat laporan →</a>
+            </div>
+            {act.recent_orders.length === 0 ? <p className="text-sm text-neutral-400">Belum ada transaksi.</p> : (
+              <div className="overflow-x-auto">
+                <table className="table-clean">
+                  <thead><tr><th>No. Order</th><th>Kanal</th><th>Total</th><th>Status</th></tr></thead>
+                  <tbody>
+                    {act.recent_orders.map((o) => (
+                      <tr key={o.order_number}>
+                        <td className="whitespace-nowrap font-semibold">{o.order_number}</td>
+                        <td className="whitespace-nowrap text-xs">{o.channel === "OFFLINE_POS" ? "Kasir" : "Online"} · {o.fulfillment_type === "DELIVERY" ? "Antar" : o.fulfillment_type === "PICKUP" ? "Ambil" : "Langsung"}</td>
+                        <td className="whitespace-nowrap font-bold">{fmtRp(o.total_amount)}</td>
+                        <td><span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-black ${o.status === "COMPLETED" ? "bg-green-100 text-green-700" : o.status === "CANCELLED" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}>{o.status === "COMPLETED" ? "SELESAI" : o.status === "CANCELLED" ? "BATAL" : o.status}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+          {/* Riwayat Pengeluaran Terakhir */}
+          <div className="card card-pad">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="flex items-center gap-2 font-heading text-base font-bold"><Icon name="wallet" className="h-4 w-4 text-orange-500" /> Pengeluaran Bulan Ini: <span className="text-orange-600">{fmtRp(act.expense_month)}</span></h2>
+            </div>
+            {act.recent_expenses.length === 0 ? <p className="text-sm text-neutral-400">Belum ada pengeluaran tercatat.</p> : (
+              <div className="overflow-x-auto">
+                <table className="table-clean">
+                  <thead><tr><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Jumlah</th></tr></thead>
+                  <tbody>
+                    {act.recent_expenses.map((f, i) => (
+                      <tr key={i}>
+                        <td className="whitespace-nowrap">{String(f.transaction_date)}</td>
+                        <td className="whitespace-nowrap text-xs font-bold">{CAT_LABEL[f.category] || f.category}</td>
+                        <td className="max-w-[180px] truncate text-xs text-neutral-500">{f.description || "—"}</td>
+                        <td className="whitespace-nowrap font-bold text-orange-600">{fmtRp(f.amount)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="card mt-4 card-pad">
         <h2 className="mb-3 font-heading text-base font-bold">Laporan Tutup Kas — Verifikasi & Kunci</h2>

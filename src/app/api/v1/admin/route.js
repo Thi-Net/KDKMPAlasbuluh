@@ -18,6 +18,10 @@ export async function GET(req) {
       const rows = await rpc("audit_log_list", { p_limit: 100 });
       return Response.json({ success: true, data: rows });
     }
+    if (what === "dashboard_activity") {
+      const data = await rpc("dashboard_activity");
+      return Response.json({ success: true, data });
+    }
     if (what === "closings") {
       const rows = await rpc("closings_list");
       return Response.json({ success: true, data: rows });
