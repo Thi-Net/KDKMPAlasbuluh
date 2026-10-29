@@ -69,7 +69,9 @@ function SectionHead({ eyebrow, title, desc, light }) {
   return (
     <div className="mx-auto mb-10 max-w-2xl text-center md:mb-14">
       {eyebrow && (
-        <p className={`mb-3 text-xs font-bold uppercase tracking-[0.2em] ${light ? "text-koperasi-gold" : "text-koperasi-red"}`}>{eyebrow}</p>
+        <p className={`mb-3 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.15em] ${light ? "bg-white/10 text-koperasi-gold ring-1 ring-white/20" : "bg-koperasi-red/8 text-koperasi-red"}`}>
+          <span className="h-1.5 w-1.5 rounded-full bg-current" /> {eyebrow}
+        </p>
       )}
       <h2 className={`font-heading text-3xl font-bold leading-tight md:text-4xl ${light ? "text-white" : "text-neutral-900"}`}>{title}</h2>
       {desc && <p className={`mt-4 text-base leading-relaxed ${light ? "text-white/75" : "text-neutral-500"}`}>{desc}</p>}
@@ -90,6 +92,7 @@ export function LandingContent() {
   }, []);
 
   const cms = data?.cms || {};
+  const tickerProducts = products.slice(0, 8);
   const stats = data?.stats || {};
   const hero = cms.hero || {};
   const board = cms.board_members?.list || [];
@@ -170,6 +173,24 @@ export function LandingContent() {
             </div>
           </div>
 
+          {/* ticker produk live (harga berjalan ala marketplace) */}
+          {!dbError && tickerProducts.length > 0 && (
+            <div className="mt-10 overflow-hidden rounded-full border border-white/15 bg-white/10 backdrop-blur-sm" data-hero="para">
+              <div className="flex items-center gap-3 px-4 py-2">
+                <span className="shrink-0 rounded-full bg-koperasi-gold px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-neutral-900">Harga Gerai</span>
+                <div className="relative flex-1 overflow-hidden">
+                  <div className="flex w-max gap-8" style={{ animation: "ticker 28s linear infinite" }}>
+                    {[...tickerProducts, ...tickerProducts].map((tp, i) => (
+                      <span key={i} className="whitespace-nowrap text-xs font-semibold text-white/90">
+                        {tp.name} · <b className="text-koperasi-gold">{fmtRp(tp.selling_price)}</b>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* statistik overlay hero (ala simkopdes) */}
           <div className="mt-12 grid grid-cols-2 gap-4 border-t border-white/15 pt-6 sm:grid-cols-4 md:mt-16">
             {statItems.map((s) => (
@@ -205,8 +226,9 @@ export function LandingContent() {
           />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {LAYANAN.map((s, i) => (
-              <div key={s.title} data-motion="fade-slide" data-motion-index={i} className="group card card-hover p-7">
-                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-koperasi-red text-white shadow-[0_10px_25px_rgba(198,40,40,0.3)] transition-transform duration-200 group-hover:scale-105">
+              <div key={s.title} data-motion="fade-slide" data-motion-index={i} className="group card card-hover relative overflow-hidden p-7">
+                <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-koperasi-red via-koperasi-gold to-koperasi-red transition-transform duration-300 group-hover:scale-x-100" />
+                <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-koperasi-red text-white shadow-[0_10px_25px_rgba(198,40,40,0.3)] transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                   <Icon name={s.icon} className="h-7 w-7" />
                 </div>
                 <h3 className="font-heading text-lg font-bold text-neutral-900">{s.title}</h3>
@@ -344,10 +366,15 @@ export function LandingContent() {
                   </div>
                   <div className="p-4">
                     <div className="text-sm font-bold leading-snug text-neutral-900">{p.name}</div>
-                    <div className="mt-2 flex items-baseline justify-between">
-                      <span className="font-heading text-lg font-bold text-koperasi-red">{fmtRp(p.selling_price)}</span>
+                    <div className="mt-2 flex items-center justify-between gap-2">
+                      <span className="font-heading text-lg font-extrabold text-koperasi-red">{fmtRp(p.selling_price)}</span>
+                      {p.current_stock > 0 && (
+                        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-koperasi-red text-white opacity-0 shadow-md transition-all duration-200 group-hover:opacity-100" aria-hidden="true">
+                          <Icon name="arrowRight" className="h-3.5 w-3.5" />
+                        </span>
+                      )}
                     </div>
-                    <div className={`mt-0.5 text-xs ${p.current_stock > 0 ? "text-neutral-400" : "font-bold text-red-500"}`}>
+                    <div className={`mt-0.5 text-xs font-semibold ${p.current_stock > 0 ? "text-green-600" : "font-bold text-red-500"}`}>
                       {p.current_stock > 0 ? `Tersedia ${p.current_stock} ${p.unit || "pcs"}` : "Stok Habis"}
                     </div>
                   </div>
@@ -403,7 +430,14 @@ export function LandingContent() {
             <p className="relative mx-auto mt-4 max-w-xl text-base text-white/85">
               Daftar sebagai anggota koperasi, kumpulkan poin belanja SHU, dan nikmati harga koperasi serta layanan delivery ke rumah.
             </p>
-            <div className="relative mt-8 flex flex-wrap justify-center gap-3">
+            <div className="relative mt-7 flex flex-wrap justify-center gap-2.5 text-xs font-bold">
+              {["Gratis daftar", "Harga koperasi", "Dapat SHU", "COD di mana saja"].map((b) => (
+                <span key={b} className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 ring-1 ring-white/25">
+                  <Icon name="check" className="h-3 w-3 text-koperasi-gold" /> {b}
+                </span>
+              ))}
+            </div>
+            <div className="relative mt-6 flex flex-wrap justify-center gap-3">
               <Link href="/register" className="rounded-[10px] bg-koperasi-gold px-7 py-3.5 text-base font-bold text-neutral-900 shadow-[0_10px_30px_rgba(249,168,37,0.4)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105">Daftar Anggota Sekarang</Link>
               <Link href="/katalog" className="rounded-[10px] border-2 border-white/70 px-7 py-3.5 text-base font-bold text-white transition-colors duration-200 hover:bg-white/10">Mulai Belanja</Link>
             </div>
