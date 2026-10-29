@@ -178,6 +178,25 @@ export default function AdminDashboard() {
                 </table>
               </div>
             )}
+            {act.recent_pos?.length > 0 && (
+              <>
+                <h3 className="mb-2 mt-5 flex items-center gap-2 text-sm font-bold text-neutral-700"><Icon name="cash" className="h-4 w-4 text-green-600" /> Penjualan Kasir Cepat (POS) Terakhir</h3>
+                <div className="overflow-x-auto">
+                  <table className="table-clean">
+                    <thead><tr><th>No.</th><th>Keterangan</th><th>Total</th></tr></thead>
+                    <tbody>
+                      {act.recent_pos.map((f) => (
+                        <tr key={f.number}>
+                          <td className="whitespace-nowrap font-semibold">{f.number}</td>
+                          <td className="max-w-[200px] truncate text-xs text-neutral-500">{f.description}</td>
+                          <td className="whitespace-nowrap font-bold text-green-700">{fmtRp(f.amount)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
           </div>
           {/* Riwayat Pengeluaran Terakhir */}
           <div className="card card-pad">
